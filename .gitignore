@@ -30,3 +30,6 @@ httpRequests
 
 ### Environment variables ###
 .env
+
+# Ignore Gradle build output directory
+build
