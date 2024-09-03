@@ -16,6 +16,12 @@ repositories {
 dependencies {
     testImplementation libs.junit.jupiter
 
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+
+    testCompileOnly libs.lombok
+    testAnnotationProcessor libs.lombok
+
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
