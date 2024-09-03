@@ -14,11 +14,11 @@ repositories {
 }
 
 dependencies {
-    testImplementation libs.junit.jupiter
-
+    implementation libs.jackson
     compileOnly libs.lombok
     annotationProcessor libs.lombok
 
+    testImplementation libs.junit.jupiter
     testCompileOnly libs.lombok
     testAnnotationProcessor libs.lombok
 
