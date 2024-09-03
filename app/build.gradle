@@ -15,6 +15,7 @@ repositories {
 
 dependencies {
     implementation libs.jackson
+    implementation libs.logback
     compileOnly libs.lombok
     annotationProcessor libs.lombok
 
