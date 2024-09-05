@@ -14,7 +14,8 @@ repositories {
 }
 
 dependencies {
-    implementation libs.jackson
+    implementation libs.jackson.databind
+    implementation libs.jackson.dataformat.xml
     implementation libs.logback
     compileOnly libs.lombok
     annotationProcessor libs.lombok
