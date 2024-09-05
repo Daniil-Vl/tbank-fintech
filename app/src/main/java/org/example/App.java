@@ -1,6 +1,5 @@
 package org.example;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -8,40 +7,30 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import static org.example.CityParser.readCityFromJson;
+import static org.example.CityXmlMapper.toXML;
+
 @Slf4j
 public class App {
 
     private final static Path CITY_RESOURCES_PATH = Path.of("app/src/main/resources/city");
 
     public static void main(String[] args) throws IOException {
-        Optional<City> city = readCity(CITY_RESOURCES_PATH.resolve("city.json"));
+        Optional<City> city = readCityFromJson(CITY_RESOURCES_PATH.resolve("city.json"));
         if (city.isPresent()) {
-            saveCityXml(city.get(), CITY_RESOURCES_PATH.resolve("city.xml"));
+            saveCity(city.get(), CITY_RESOURCES_PATH.resolve("city.xml"));
         }
 
-        Optional<City> cityWithError = readCity(CITY_RESOURCES_PATH.resolve("city-error.json"));
+        Optional<City> cityWithError = readCityFromJson(CITY_RESOURCES_PATH.resolve("city-error.json"));
         if (cityWithError.isPresent()) {
-            saveCityXml(cityWithError.get(), CITY_RESOURCES_PATH.resolve("city-error.xml"));
+            saveCity(cityWithError.get(), CITY_RESOURCES_PATH.resolve("city-error.xml"));
         }
     }
 
-    public static Optional<City> readCity(Path filename) {
-        ObjectMapper mapper = new ObjectMapper();
-        log.debug("Trying to read city from {}", filename);
-
-        try {
-            City city = mapper.readValue(filename.toFile(), City.class);
-            log.info("Read city from {}", filename);
-            return Optional.of(city);
-        } catch (IOException e) {
-            log.error("Failed to read and parse {}", filename, e);
-            return Optional.empty();
-        }
-    }
-
-    public static void saveCityXml(City city, Path filename) throws IOException {
+    public static void saveCity(City city, Path filename) throws IOException {
         log.info("Saving city {} to {}", city, filename);
-        Files.writeString(filename, city.toXML());
+        String cityXML = toXML(city);
+        Files.writeString(filename, cityXML);
     }
 
 }
