@@ -34,8 +34,7 @@ public class App {
             log.info("Read city from {}", filename);
             return Optional.of(city);
         } catch (IOException e) {
-            log.error("Failed to read and parse {}", filename);
-            log.error(e.getMessage());
+            log.error("Failed to read and parse {}", filename, e);
             return Optional.empty();
         }
     }
