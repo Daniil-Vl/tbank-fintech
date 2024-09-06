@@ -66,6 +66,14 @@ public class CustomLinkedList<T> {
         }
     }
 
+    public void addAll(CustomLinkedList<T> items) {
+        Node<T> currentNode = items.head;
+        while (currentNode != null) {
+            add(currentNode.value);
+            currentNode = currentNode.next;
+        }
+    }
+
     private Node<T> findNode(int index) {
         Node<T> node = head;
 

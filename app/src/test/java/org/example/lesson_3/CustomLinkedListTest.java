@@ -104,4 +104,24 @@ class CustomLinkedListTest {
         assertEquals(2, list.get(1));
         assertEquals(3, list.get(2));
     }
+
+    @Test
+    void addAllWithCustomLinkedList() {
+        CustomLinkedList<Integer> list = new CustomLinkedList<>();
+        CustomLinkedList<Integer> other = new CustomLinkedList<>();
+
+        list.addAll(List.of(1, 2, 3));
+        other.addAll(List.of(4, 5, 6));
+
+        list.addAll(other);
+
+        assertEquals(6, list.size());
+
+        assertEquals(1, list.get(0));
+        assertEquals(2, list.get(1));
+        assertEquals(3, list.get(2));
+        assertEquals(4, list.get(3));
+        assertEquals(5, list.get(4));
+        assertEquals(6, list.get(5));
+    }
 }
