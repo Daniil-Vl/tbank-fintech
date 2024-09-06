@@ -51,6 +51,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        firstTask();
+        System.out.println("\n-------------------------------------------------\n");
         secondTask();
     }
 }
