@@ -13,15 +13,17 @@ public class CustomLinkedList<T> {
 
     public void add(T item) {
         Node<T> node = new Node<>(item);
-        node.previous = tail;
-        size++;
 
         if (head == null) {
             head = node;
         } else {
             tail.next = node;
+            node.previous = tail;
         }
+
         tail = node;
+
+        size++;
     }
 
     public T get(int index) {
@@ -35,18 +37,20 @@ public class CustomLinkedList<T> {
 
         if (node == head) {
             head = head.next;
+            if (head != null)
+                head.previous = null;
             return;
         }
 
-        Node<T> previousNode = node.previous;
-        Node<T> nextNode = node.next;
+        if (node == tail) {
+            tail = tail.previous;
+            if (tail != null)
+                tail.next = null;
+            return;
+        }
 
-        if (previousNode != null) {
-            previousNode.next = nextNode;
-        }
-        if (nextNode != null) {
-            nextNode.previous = previousNode;
-        }
+        node.previous.next = node.next;
+        node.next.previous = node.previous;
     }
 
     public boolean contains(T item) {
