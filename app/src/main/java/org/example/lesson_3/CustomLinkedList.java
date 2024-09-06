@@ -31,6 +31,7 @@ public class CustomLinkedList<T> {
 
     public void remove(int index) {
         Node<T> node = findNode(index);
+        size--;
 
         if (node == head) {
             head = head.next;
@@ -46,8 +47,6 @@ public class CustomLinkedList<T> {
         if (nextNode != null) {
             nextNode.previous = previousNode;
         }
-
-        size--;
     }
 
     public boolean contains(T item) {
