@@ -1,6 +1,8 @@
 package org.example.lesson_3;
 
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -35,19 +37,35 @@ public class Main {
     }
 
     static void secondTask() {
-        // 1
+        // With collect
         Stream<Integer> stream = IntStream.range(1, 11).boxed();
-        CustomLinkedList<Integer> list = stream.collect(
+        CustomLinkedList<Integer> list1 = stream.collect(
                 CustomLinkedList::new, // Supplier of initial collection
                 CustomLinkedList::add, // Accumulator
                 CustomLinkedList::addAll // Two collection combiner
         );
-        System.out.println(list);
+        System.out.println(list1);
 
-        // 2
+        // With reduce
         stream = IntStream.range(1, 11).boxed();
-        int sum = stream.reduce(0, Integer::sum);
-        System.out.println(sum);
+        CustomLinkedList<Integer> list2 = stream.reduce(
+                new CustomLinkedList<>(),
+                new BiFunction<CustomLinkedList<Integer>, Integer, CustomLinkedList<Integer>>() {
+                    @Override
+                    public CustomLinkedList<Integer> apply(CustomLinkedList<Integer> list, Integer integer) {
+                        list.add(integer);
+                        return list;
+                    }
+                },
+                new BinaryOperator<CustomLinkedList<Integer>>() {
+                    @Override
+                    public CustomLinkedList<Integer> apply(CustomLinkedList<Integer> firstList, CustomLinkedList<Integer> secondList) {
+                        firstList.addAll(secondList);
+                        return firstList;
+                    }
+                }
+        );
+        System.out.println(list2);
     }
 
     public static void main(String[] args) {
