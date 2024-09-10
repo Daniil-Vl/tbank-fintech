@@ -86,7 +86,7 @@ public class CustomLinkedList<T> {
         }
 
         if (node == null) {
-            throw new IndexOutOfBoundsException("Index = %d, Size = %d".formatted(index, size));
+            throw new IndexOutOfBoundsException(String.format("Index = %d, Size = %d", index, size));
         }
 
         return node;
