@@ -1,8 +1,6 @@
 package org.example.lesson_3;
 
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -49,20 +47,14 @@ public class Main {
         // With reduce
         stream = IntStream.range(1, 11).boxed();
         CustomLinkedList<Integer> list2 = stream.reduce(
-                new CustomLinkedList<>(),
-                new BiFunction<CustomLinkedList<Integer>, Integer, CustomLinkedList<Integer>>() {
-                    @Override
-                    public CustomLinkedList<Integer> apply(CustomLinkedList<Integer> list, Integer integer) {
-                        list.add(integer);
-                        return list;
-                    }
+                new CustomLinkedList<>(), // Supplier of initial collection
+                (list, integer) -> { // Accumulator
+                    list.add(integer);
+                    return list;
                 },
-                new BinaryOperator<CustomLinkedList<Integer>>() {
-                    @Override
-                    public CustomLinkedList<Integer> apply(CustomLinkedList<Integer> firstList, CustomLinkedList<Integer> secondList) {
-                        firstList.addAll(secondList);
-                        return firstList;
-                    }
+                (firstList, secondList) -> { // Two collection combiner
+                    firstList.addAll(secondList);
+                    return firstList;
                 }
         );
         System.out.println(list2);
