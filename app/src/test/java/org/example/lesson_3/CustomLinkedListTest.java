@@ -13,8 +13,10 @@ class CustomLinkedListTest {
         assertEquals(0, list.size());
 
         list.add(1);
-        assertEquals(1, list.size());
-        assertEquals(1, list.get(0));
+        assertAll(
+                () -> assertEquals(1, list.size()),
+                () -> assertEquals(1, list.get(0))
+        );
     }
 
     @Test
@@ -25,8 +27,10 @@ class CustomLinkedListTest {
         assertEquals(1, list.size());
 
         list.add(2);
-        assertEquals(2, list.size());
-        assertEquals(2, list.get(1));
+        assertAll(
+                () -> assertEquals(2, list.size()),
+                () -> assertEquals(2, list.get(1))
+        );
     }
 
     @Test
@@ -56,8 +60,10 @@ class CustomLinkedListTest {
         list.add(1);
         list.add(2);
         list.remove(0);
-        assertFalse(list.contains(1));
-        assertEquals(1, list.size());
+        assertAll(
+                () -> assertFalse(list.contains(1)),
+                () -> assertEquals(1, list.size())
+        );
     }
 
     @Test
@@ -99,10 +105,12 @@ class CustomLinkedListTest {
     void addAll() {
         CustomLinkedList<Integer> list = new CustomLinkedList<>();
         list.addAll(List.of(1, 2, 3));
-        assertEquals(3, list.size());
-        assertEquals(1, list.get(0));
-        assertEquals(2, list.get(1));
-        assertEquals(3, list.get(2));
+        assertAll(
+                () -> assertEquals(3, list.size()),
+                () -> assertEquals(1, list.get(0)),
+                () -> assertEquals(2, list.get(1)),
+                () -> assertEquals(3, list.get(2))
+        );
     }
 
     @Test
@@ -115,13 +123,14 @@ class CustomLinkedListTest {
 
         list.addAll(other);
 
-        assertEquals(6, list.size());
-
-        assertEquals(1, list.get(0));
-        assertEquals(2, list.get(1));
-        assertEquals(3, list.get(2));
-        assertEquals(4, list.get(3));
-        assertEquals(5, list.get(4));
-        assertEquals(6, list.get(5));
+        assertAll(
+                () -> assertEquals(6, list.size()),
+                () -> assertEquals(1, list.get(0)),
+                () -> assertEquals(2, list.get(1)),
+                () -> assertEquals(3, list.get(2)),
+                () -> assertEquals(4, list.get(3)),
+                () -> assertEquals(5, list.get(4)),
+                () -> assertEquals(6, list.get(5))
+        );
     }
 }
