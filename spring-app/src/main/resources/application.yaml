@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: spring-app
+
+aspect:
+  enabled: true
+
+server:
+  error:
+    include-stacktrace: never
