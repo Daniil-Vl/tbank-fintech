@@ -33,3 +33,5 @@ httpRequests
 
 # Ignore Gradle build output directory
 build
+
+httpRequest
