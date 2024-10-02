@@ -1,19 +1,16 @@
 package ru.tbank.springapp.dao.impl;
 
+import lombok.RequiredArgsConstructor;
 import ru.tbank.springapp.dao.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+@RequiredArgsConstructor
 public class RepositoryImpl<K, V> implements Repository<K, V> {
 
     private final ConcurrentMap<K, V> map;
-
-    public RepositoryImpl() {
-        this.map = new ConcurrentHashMap<>();
-    }
 
     @Override
     public List<V> getAll() {

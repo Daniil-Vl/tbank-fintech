@@ -43,13 +43,25 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category update(String slug, String name) {
         log.info("Trying to update category with id {}", slug);
+
         Category category = new Category(slug, name);
-        return categoryRepository.update(slug, category);
+        Category previousCategory = categoryRepository.update(slug, category);
+
+        if (previousCategory == null)
+            throw new ResourceNotFoundException("Category with slug " + slug + " not found");
+
+        return previousCategory;
     }
 
     @Override
     public Category delete(String slug) {
         log.info("Trying to remove category with id {}", slug);
-        return categoryRepository.delete(slug);
+
+        Category deleted = categoryRepository.delete(slug);
+
+        if (deleted == null)
+            throw new ResourceNotFoundException("Category with slug " + slug + " not found");
+
+        return deleted;
     }
 }
