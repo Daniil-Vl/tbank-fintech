@@ -74,7 +74,7 @@ class RepositoryImplTest {
         List<Category> all = repository.getAll();
         assertAll(
                 () -> assertEquals(1, all.size()),
-                () -> assertEquals(category, all.get(0))
+                () -> assertEquals(category, all.getFirst())
         );
     }
 
@@ -87,7 +87,7 @@ class RepositoryImplTest {
         List<Category> all = repository.getAll();
         assertAll(
                 () -> assertEquals(1, all.size()),
-                () -> assertEquals(category, all.get(0))
+                () -> assertEquals(category, all.getFirst())
         );
     }
 
@@ -128,7 +128,7 @@ class RepositoryImplTest {
         List<Category> all = repository.getAll();
         assertAll(
                 () -> assertEquals(1, all.size()),
-                () -> assertEquals(existingCategory, all.get(0)),
+                () -> assertEquals(existingCategory, all.getFirst()),
                 () -> assertNull(returnedValue)
         );
     }
