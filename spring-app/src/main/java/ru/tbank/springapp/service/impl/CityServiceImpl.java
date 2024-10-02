@@ -43,8 +43,14 @@ public class CityServiceImpl implements CityService {
     @Override
     public City update(String slug, String name) {
         log.info("Trying to update city with id {}", slug);
+
         City city = new City(slug, name);
-        return cityRepository.update(slug, city);
+        City previousCity = cityRepository.update(slug, city);
+
+        if (previousCity == null)
+            throw new ResourceNotFoundException("City with slug " + slug + " not found");
+
+        return previousCity;
     }
 
     @Override
