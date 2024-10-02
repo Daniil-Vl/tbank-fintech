@@ -56,6 +56,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category delete(String slug) {
         log.info("Trying to remove category with id {}", slug);
-        return categoryRepository.delete(slug);
+
+        Category deleted = categoryRepository.delete(slug);
+
+        if (deleted == null)
+            throw new ResourceNotFoundException("Category with slug " + slug + " not found");
+
+        return deleted;
     }
 }

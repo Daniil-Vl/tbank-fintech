@@ -56,6 +56,12 @@ public class CityServiceImpl implements CityService {
     @Override
     public City delete(String slug) {
         log.info("Trying to remove city with id {}", slug);
-        return cityRepository.delete(slug);
+
+        City deleted = cityRepository.delete(slug);
+
+        if (deleted == null)
+            throw new ResourceNotFoundException("City with slug " + slug + " not found");
+
+        return deleted;
     }
 }
