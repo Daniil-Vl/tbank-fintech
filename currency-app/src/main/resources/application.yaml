@@ -21,3 +21,6 @@ app:
   central-bank-currencies-url: http://www.cbr.ru/scripts/XML_daily.asp
   central-bank-cache-name: "cbCurrenciesCache"
 
+logging:
+  level:
+    web: debug
