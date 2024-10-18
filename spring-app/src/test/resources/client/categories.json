@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "slug": "fir",
+    "name": "first"
+  },
+  {
+    "id": 2,
+    "slug": "sec",
+    "name": "second"
+  }
+]
