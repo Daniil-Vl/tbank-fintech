@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import ru.tbank.currencyapp.validation.annotations.CurrencyIsValid;
 
+import java.math.BigDecimal;
+
 public record CurrencyConvertRequestDTO(
         @NotBlank(message = "fromCurrency field can not be empty")
         @CurrencyIsValid
@@ -16,6 +18,6 @@ public record CurrencyConvertRequestDTO(
 
         @NotNull(message = "amount field cannot be empty")
         @Positive(message = "amount must be non negative")
-        Double amount
+        BigDecimal amount
 ) {
 }

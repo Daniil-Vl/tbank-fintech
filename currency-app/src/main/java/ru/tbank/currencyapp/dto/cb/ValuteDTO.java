@@ -6,6 +6,8 @@ import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+
 /**
  * DTO for parsing response's application/xml content after requesting currency info from central bank api
  */
@@ -29,20 +31,20 @@ public class ValuteDTO {
 
     @XmlElement(name = "Value")
     @XmlJavaTypeAdapter(value = DoubleAdapter.class)
-    public Double value;
+    public BigDecimal value;
 
     @XmlElement(name = "VunitRate")
     @XmlJavaTypeAdapter(value = DoubleAdapter.class)
-    public Double rate;
+    public BigDecimal rate;
 
-    private static class DoubleAdapter extends XmlAdapter<String, Double> {
+    private static class DoubleAdapter extends XmlAdapter<String, BigDecimal> {
         @Override
-        public Double unmarshal(String v) {
-            return Double.parseDouble(v.replace(',', '.'));
+        public BigDecimal unmarshal(String v) {
+            return new BigDecimal(v.replace(",", "."));
         }
 
         @Override
-        public String marshal(Double v) {
+        public String marshal(BigDecimal v) {
             return v.toString().replace('.', ',');
         }
     }

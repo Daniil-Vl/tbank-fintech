@@ -14,8 +14,9 @@ import ru.tbank.currencyapp.dto.CurrencyRateDTO;
 import ru.tbank.currencyapp.dto.cb.CBCurrencyResponseDTO;
 import ru.tbank.currencyapp.exception.exceptions.CurrencyNotFoundException;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -29,10 +30,10 @@ class CurrencyServiceImplTest {
 
     @BeforeEach
     void initCbClient() {
-        List<CBCurrencyResponseDTO> currencies = new ArrayList<>();
+        Map<String, CBCurrencyResponseDTO> currencies = new HashMap<>();
 
-        currencies.add(new CBCurrencyResponseDTO(1, "RUB", 1, "first", 1.0, 1.0));
-        currencies.add(new CBCurrencyResponseDTO(2, "USD", 2, "second", 30.0, 30.0));
+        currencies.put("RUB", new CBCurrencyResponseDTO(1, "RUB", 1, "first", new BigDecimal("1.0"), new BigDecimal("1.0")));
+        currencies.put("USD", new CBCurrencyResponseDTO(2, "USD", 2, "second", new BigDecimal("30.0"), new BigDecimal("30.0")));
 
         Mockito.when(centralBankClient.getCurrencies()).thenReturn(currencies);
     }
@@ -40,12 +41,12 @@ class CurrencyServiceImplTest {
     @Test
     void givenCurrencyCode_whenGetRate_thenRateSuccessfullyRetrieved() {
         String code = "USD";
-        Double expected = 30.0;
+        BigDecimal expectedRate = new BigDecimal("30.0");
 
         CurrencyRateDTO rate = currencyService.getRate(code);
 
         Assertions.assertEquals(code, rate.currency());
-        Assertions.assertEquals(expected, rate.rate());
+        Assertions.assertEquals(expectedRate, rate.rate());
     }
 
     @Test
@@ -59,8 +60,8 @@ class CurrencyServiceImplTest {
     void givenValidCurrenciesAndValidAmount_whenConvertCurrencies_thenSuccessfullyConverted() {
         String fromCurrency = "USD";
         String toCurrency = "RUB";
-        Double amount = 3.0;
-        Double expected = 90.0;
+        BigDecimal amount = new BigDecimal("3.0");
+        BigDecimal expected = new BigDecimal("90.0");
 
         CurrencyConvertedDTO actual = currencyService.convertCurrencies(fromCurrency, toCurrency, amount);
 
@@ -73,7 +74,7 @@ class CurrencyServiceImplTest {
     void givenNonExistentCurrencyCode_whenConvertCurrencies_thenThrowCurrencyNotFoundException() {
         String fromCurrency = "???";
         String toCurrency = "RUB";
-        Double amount = 3.0;
+        BigDecimal amount = new BigDecimal("3.0");
 
         Assertions.assertThrows(CurrencyNotFoundException.class, () -> currencyService.convertCurrencies(fromCurrency, toCurrency, amount));
     }

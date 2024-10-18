@@ -18,6 +18,8 @@ import ru.tbank.currencyapp.exception.exceptions.CurrencyNotFoundException;
 import ru.tbank.currencyapp.exception.exceptions.ExternalSystemUnavailableException;
 import ru.tbank.currencyapp.service.currency.CurrencyService;
 
+import java.math.BigDecimal;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -44,7 +46,7 @@ class CurrencyControllerImplTest {
     void givenValidCode_whenGetCurrencyRate_thenGetRateFromService() throws Exception {
         String code = "AUD";
 
-        CurrencyRateDTO expectedResponseBody = new CurrencyRateDTO(code, 10.0);
+        CurrencyRateDTO expectedResponseBody = new CurrencyRateDTO(code, new BigDecimal("10.0"));
         String responseBodyJson = mapper.writeValueAsString(expectedResponseBody);
 
         when(currencyService.getRate(code)).thenReturn(expectedResponseBody);
@@ -76,10 +78,10 @@ class CurrencyControllerImplTest {
 
     @Test
     void givenValidCurrenciesAndAmount_whenConvertCurrency_thenSuccessfullyConvertWithService() throws Exception {
-        CurrencyConvertRequestDTO requestBody = new CurrencyConvertRequestDTO("AUD", "RUB", 10.0);
+        CurrencyConvertRequestDTO requestBody = new CurrencyConvertRequestDTO("AUD", "RUB", new BigDecimal("10.0"));
         String requestBodyJson = mapper.writeValueAsString(requestBody);
 
-        CurrencyConvertedDTO expectedResponseBody = new CurrencyConvertedDTO("AUD", "RUB", 100.0);
+        CurrencyConvertedDTO expectedResponseBody = new CurrencyConvertedDTO("AUD", "RUB", new BigDecimal("100.0"));
         String responseBodyJson = mapper.writeValueAsString(expectedResponseBody);
 
         when(currencyService.convertCurrencies(requestBody.fromCurrency(), requestBody.toCurrency(), requestBody.amount()))
@@ -98,7 +100,7 @@ class CurrencyControllerImplTest {
 
     @Test
     void givenInvalidCurrency_whenConvertCurrency_thenReturnApiErrorWithBadRequest() throws Exception {
-        CurrencyConvertRequestDTO requestBody = new CurrencyConvertRequestDTO("ASDSADS", "RUB", 10.0);
+        CurrencyConvertRequestDTO requestBody = new CurrencyConvertRequestDTO("ASDSADS", "RUB", new BigDecimal("10.0"));
         String requestBodyJson = mapper.writeValueAsString(requestBody);
 
         ApiErrorDTO apiErrorDTO = new ApiErrorDTO(400, "[, fromCurrency: Currency is invalid]");
@@ -117,7 +119,7 @@ class CurrencyControllerImplTest {
 
     @Test
     void givenValidCurrencyNotInCbList_whenConvertCurrency_thenReturnApiErrorWithNotFound() throws Exception {
-        CurrencyConvertRequestDTO requestBody = new CurrencyConvertRequestDTO("AUD", "RUB", 10.0);
+        CurrencyConvertRequestDTO requestBody = new CurrencyConvertRequestDTO("AUD", "RUB", new BigDecimal("10.0"));
         String requestBodyJson = mapper.writeValueAsString(requestBody);
 
         ApiErrorDTO apiErrorDTO = new ApiErrorDTO(404, "To currency not found: " + requestBody.toCurrency());
@@ -139,7 +141,7 @@ class CurrencyControllerImplTest {
 
     @Test
     void givenNegativeAmount_whenConvertCurrency_thenReturnApiErrorWithBadRequest() throws Exception {
-        CurrencyConvertRequestDTO requestBody = new CurrencyConvertRequestDTO("AUD", "RUB", -10.0);
+        CurrencyConvertRequestDTO requestBody = new CurrencyConvertRequestDTO("AUD", "RUB", new BigDecimal("-10.0"));
         String requestBodyJson = mapper.writeValueAsString(requestBody);
 
         ApiErrorDTO apiErrorDTO = new ApiErrorDTO(400, "[, amount: amount must be non negative]");
@@ -158,7 +160,7 @@ class CurrencyControllerImplTest {
 
     @Test
     void givenUnavailableCentralBankApi_whenConvertCurrency_thenReturnApiErrorWithServiceUnavailable() throws Exception {
-        CurrencyConvertRequestDTO requestBody = new CurrencyConvertRequestDTO("AUD", "RUB", 10.0);
+        CurrencyConvertRequestDTO requestBody = new CurrencyConvertRequestDTO("AUD", "RUB", new BigDecimal("10.0"));
         String requestBodyJson = mapper.writeValueAsString(requestBody);
 
         ApiErrorDTO apiErrorDTO = new ApiErrorDTO(503, "Central bank api unavailable");

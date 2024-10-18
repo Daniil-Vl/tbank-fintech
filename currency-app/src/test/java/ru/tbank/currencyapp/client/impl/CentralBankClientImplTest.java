@@ -17,13 +17,15 @@ import org.springframework.web.reactive.function.client.WebClient;
 import ru.tbank.currencyapp.client.CentralBankClient;
 import ru.tbank.currencyapp.dto.cb.CBCurrencyResponseDTO;
 import ru.tbank.currencyapp.exception.exceptions.ExternalSystemUnavailableException;
+import wiremock.com.google.common.collect.Maps;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
@@ -52,7 +54,7 @@ class CentralBankClientImplTest {
     @Test
     void givenWorkingCentralBankApi_whenGetCurrencies_thenCurrenciesSuccessfullyRetrieved() throws IOException {
         server.stubFor(
-                get(urlPathEqualTo("/XML_daily.asp")).withQueryParam("date_req", equalTo(LocalDate.now().format(DATE_TIME_FORMATTER)))
+                get(urlPathEqualTo("/")).withQueryParam("date_req", equalTo(LocalDate.now().format(DATE_TIME_FORMATTER)))
                         .withHeader(HttpHeaders.ACCEPT, equalTo(MediaType.APPLICATION_XML_VALUE))
                         .willReturn(
                                 aResponse().withStatus(200).withHeader("Content-Type", MediaType.APPLICATION_XML_VALUE)
@@ -60,14 +62,16 @@ class CentralBankClientImplTest {
                         )
         );
 
-        List<CBCurrencyResponseDTO> expectedCurrencies = List.of(
-                new CBCurrencyResponseDTO(36, "AUD", 1, "Австралийский доллар", 16.0102, 16.0102),
-                new CBCurrencyResponseDTO(826, "GBP", 1, "Фунт стерлингов Соединенного королевства", 43.8254, 43.8254)
+        //
+        Map<String, CBCurrencyResponseDTO> expectedCurrencies = Map.of(
+                "AUD", new CBCurrencyResponseDTO(36, "AUD", 1, "Австралийский доллар", new BigDecimal("16.0102"), new BigDecimal("16.0102")),
+                "GBP", new CBCurrencyResponseDTO(826, "GBP", 1, "Фунт стерлингов Соединенного королевства", new BigDecimal("43.8254"), new BigDecimal("43.8254")),
+                "RUB", new CBCurrencyResponseDTO(1, "RUB", 1, "Russian Rubles", new BigDecimal("1.0"), new BigDecimal("1.0"))
         );
 
-        List<CBCurrencyResponseDTO> actualCurrencies = client.getCurrencies();
+        Map<String, CBCurrencyResponseDTO> actualCurrencies = client.getCurrencies();
 
-        Assertions.assertIterableEquals(expectedCurrencies, actualCurrencies);
+        Assertions.assertTrue(Maps.difference(expectedCurrencies, actualCurrencies).areEqual());
     }
 
     @Test

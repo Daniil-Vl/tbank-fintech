@@ -10,7 +10,8 @@ import ru.tbank.currencyapp.dto.cb.CBCurrencyResponseDTO;
 import ru.tbank.currencyapp.exception.exceptions.CurrencyNotFoundException;
 import ru.tbank.currencyapp.service.currency.CurrencyService;
 
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -20,41 +21,33 @@ public class CurrencyServiceImpl implements CurrencyService {
     private final CentralBankClient client;
 
     public CurrencyRateDTO getRate(String code) {
-        List<CBCurrencyResponseDTO> currencies = client.getCurrencies();
+        Map<String, CBCurrencyResponseDTO> currencies = client.getCurrencies();
 
-        for (var currency : currencies) {
-            if (currency.charCode().equals(code)) {
-                return new CurrencyRateDTO(code, currency.vUnitRate());
-            }
-        }
+        if (!currencies.containsKey(code))
+            throw new CurrencyNotFoundException(String.format("Currency not found: %s", code));
 
-        throw new CurrencyNotFoundException(String.format("Currency not found: %s", code));
+        return new CurrencyRateDTO(code, currencies.get(code).vUnitRate());
     }
 
-    public CurrencyConvertedDTO convertCurrencies(String fromCurrency, String toCurrency, Double amount) {
-        List<CBCurrencyResponseDTO> currencies = client.getCurrencies();
+    public CurrencyConvertedDTO convertCurrencies(String fromCurrency, String toCurrency, BigDecimal amount) {
+        Map<String, CBCurrencyResponseDTO> currencies = client.getCurrencies();
 
-        CBCurrencyResponseDTO fromCurrencyDTO = null;
-        CBCurrencyResponseDTO toCurrencyDTO = null;
-
-        for (var currency : currencies) {
-            if (currency.charCode().equals(fromCurrency))
-                fromCurrencyDTO = currency;
-            if (currency.charCode().equals(toCurrency))
-                toCurrencyDTO = currency;
-        }
-
-        if (fromCurrencyDTO == null)
+        if (!currencies.containsKey(fromCurrency))
             throw new CurrencyNotFoundException(String.format("From currency not found: %s", fromCurrency));
-        if (toCurrencyDTO == null)
+
+        if (!currencies.containsKey(toCurrency))
             throw new CurrencyNotFoundException(String.format("To currency not found: %s", toCurrency));
 
-        Double rubAmount = fromCurrencyDTO.value() * amount;
+        CBCurrencyResponseDTO fromCurrencyDTO = currencies.get(fromCurrency);
+        CBCurrencyResponseDTO toCurrencyDTO = currencies.get(toCurrency);
+
+        BigDecimal rubAmount = fromCurrencyDTO.vUnitRate().multiply(amount);
+        BigDecimal converted = rubAmount.divide(toCurrencyDTO.vUnitRate());
 
         return new CurrencyConvertedDTO(
                 fromCurrency,
                 toCurrency,
-                rubAmount / toCurrencyDTO.value()
+                converted
         );
     }
 
