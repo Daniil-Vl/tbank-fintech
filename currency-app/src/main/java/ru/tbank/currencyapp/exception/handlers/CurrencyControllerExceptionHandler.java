@@ -36,7 +36,7 @@ public class CurrencyControllerExceptionHandler {
      * <p>Spring can throw two types of exceptions</p>
      * <p>1) HandlerMethodValidationException</p>
      * <p>2) MethodArgumentNotValidException</p>
-     *
+     * <p>
      * More info - <a href="https://github.com/spring-projects/spring-framework/issues/31775">GitHub issue</a>
      *
      * @param ex - exception
