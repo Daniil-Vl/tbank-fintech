@@ -1,24 +1,19 @@
 package ru.tbank.springapp.service.impl;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import ru.tbank.springapp.dao.Repository;
 import ru.tbank.springapp.exception.ResourceNotFoundException;
 import ru.tbank.springapp.model.Category;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.AdditionalMatchers.not;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 class CategoryServiceImplTest {
 
     @Mock
@@ -26,52 +21,6 @@ class CategoryServiceImplTest {
 
     @InjectMocks
     private CategoryServiceImpl service;
-
-    private Category existingCategory;
-    private Category modifiedCategory;
-    private Category newCategory;
-
-    @BeforeEach
-    void setUp() {
-        existingCategory = new Category("fir", "first");
-        modifiedCategory = new Category("fir", "second");
-        newCategory = new Category("thr", "third");
-
-        // GetById
-        when(
-                repository.getById(eq(existingCategory.slug()))
-        ).thenReturn(existingCategory);
-        when(
-                repository.getById(not(eq(existingCategory.slug())))
-        ).thenReturn(null);
-
-        // Save
-        when(
-                repository.save(modifiedCategory.slug(), modifiedCategory)
-        ).thenReturn(existingCategory);
-        when(
-                repository.save(newCategory.slug(), newCategory)
-        ).thenReturn(null);
-
-        // Update
-        when(
-                repository.update(existingCategory.slug(), existingCategory)
-        ).thenReturn(existingCategory);
-        when(
-                repository.update(modifiedCategory.slug(), modifiedCategory)
-        ).thenReturn(existingCategory);
-        when(
-                repository.update(newCategory.slug(), newCategory)
-        ).thenReturn(null);
-
-        // Delete
-        when(
-                repository.delete(existingCategory.slug())
-        ).thenReturn(existingCategory);
-        when(
-                repository.delete(newCategory.slug())
-        ).thenReturn(null);
-    }
 
     // FindAll
     @Test
@@ -83,6 +32,12 @@ class CategoryServiceImplTest {
     // FindById
     @Test
     void givenOneCategory_whenFindById_thenReturnCategory() {
+        Category existingCategory = new Category("fir", "first");
+
+        when(
+                repository.getById(eq(existingCategory.slug()))
+        ).thenReturn(existingCategory);
+
         Category category = service.findById(existingCategory.slug());
 
         verify(repository, times(1)).getById(existingCategory.slug());
@@ -91,6 +46,14 @@ class CategoryServiceImplTest {
 
     @Test
     void givenNewCategory_whenFindById_thenThrowResourceNotFoundException() {
+        Category newCategory = new Category("thr", "third");
+
+        when(
+                repository.getById(eq(newCategory.slug()))
+        ).thenReturn(
+                null
+        );
+
         assertThrows(
                 ResourceNotFoundException.class,
                 () -> service.findById(newCategory.slug())
@@ -101,12 +64,22 @@ class CategoryServiceImplTest {
     // Create
     @Test
     void givenNewCategory_whenCreate_thenSuccessfullySaved() {
+        Category newCategory = new Category("thr", "third");
+
+        when(
+                repository.save(newCategory.slug(), newCategory)
+        ).thenReturn(
+                null
+        );
+
         service.create(newCategory.slug(), newCategory.name());
         verify(repository, times(1)).save(newCategory.slug(), newCategory);
     }
 
     @Test
     void givenExistingCategory_whenCreate_thenUpdate() {
+        Category modifiedCategory = new Category("fir", "second");
+
         service.create(modifiedCategory.slug(), modifiedCategory.name());
         verify(repository, times(1)).save(modifiedCategory.slug(), modifiedCategory);
     }
@@ -114,12 +87,29 @@ class CategoryServiceImplTest {
     // Update
     @Test
     void givenModifiedCategory_whenUpdate_thenSuccessfullyUpdate() {
+        Category existingCategory = new Category("fir", "first");
+        Category modifiedCategory = new Category("fir", "second");
+
+        when(
+                repository.update(modifiedCategory.slug(), modifiedCategory)
+        ).thenReturn(
+                existingCategory
+        );
+
         service.update(modifiedCategory.slug(), modifiedCategory.name());
         verify(repository, times(1)).update(modifiedCategory.slug(), modifiedCategory);
     }
 
     @Test
     void givenNewCategory_whenUpdate_thenThrowResourceNotFoundException() {
+        Category newCategory = new Category("thr", "third");
+
+        when(
+                repository.update(newCategory.slug(), newCategory)
+        ).thenReturn(
+                null
+        );
+
         assertThrows(
                 ResourceNotFoundException.class,
                 () -> service.update(newCategory.slug(), newCategory.name())
@@ -130,12 +120,28 @@ class CategoryServiceImplTest {
     // Delete
     @Test
     void givenExistingCategory_whenDelete_thenSuccessfullyDeleted() {
+        Category existingCategory = new Category("fir", "first");
+
+        when(
+                repository.delete(existingCategory.slug())
+        ).thenReturn(
+                existingCategory
+        );
+
         assertDoesNotThrow(() -> service.delete(existingCategory.slug()));
         verify(repository, times(1)).delete(existingCategory.slug());
     }
 
     @Test
     void givenNewCategory_whenDelete_thenThrowResourceNotFoundException() {
+        Category newCategory = new Category("thr", "third");
+
+        when(
+                repository.delete(newCategory.slug())
+        ).thenReturn(
+                null
+        );
+
         assertThrows(
                 ResourceNotFoundException.class,
                 () -> service.delete(newCategory.slug())
