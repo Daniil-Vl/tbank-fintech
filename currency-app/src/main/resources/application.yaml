@@ -4,6 +4,9 @@ spring:
   devtools:
     restart:
       enabled: true
+  cache:
+    caffeine:
+      spec: "expireAfterWrite=1h"
 
 resilience4j:
   circuitbreaker:
