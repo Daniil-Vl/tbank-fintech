@@ -18,6 +18,6 @@ resilience4j:
           seconds: 5
 
 app:
-  central-bank-currencies-url: http://www.cbr.ru/scripts
+  central-bank-currencies-url: http://www.cbr.ru/scripts/XML_daily.asp
   central-bank-cache-name: "cbCurrenciesCache"
 

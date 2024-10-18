@@ -22,6 +22,7 @@ import java.util.List;
 public class CentralBankClientImpl implements CentralBankClient {
 
     private final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private final static String DATE_PARAM_NAME = "date_req";
     private final WebClient webClient;
 
     @Override
@@ -32,7 +33,10 @@ public class CentralBankClientImpl implements CentralBankClient {
 
         ValCursDTO valCursDTO = webClient
                 .get()
-                .uri(uriBuilder -> uriBuilder.path("/XML_daily.asp").queryParam("date_req", LocalDate.now().format(DATE_TIME_FORMATTER)).build())
+                .uri(uriBuilder -> uriBuilder
+                        .queryParam(DATE_PARAM_NAME, LocalDate.now().format(DATE_TIME_FORMATTER))
+                        .build()
+                )
                 .accept(MediaType.APPLICATION_XML)
                 .retrieve()
                 .bodyToMono(ValCursDTO.class)
