@@ -8,10 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import ru.tbank.currencyapp.dto.CurrencyConvertRequestDTO;
 import ru.tbank.currencyapp.dto.CurrencyConvertedDTO;
 import ru.tbank.currencyapp.dto.CurrencyRateDTO;
@@ -19,6 +16,7 @@ import ru.tbank.currencyapp.dto.error.ApiErrorDTO;
 import ru.tbank.currencyapp.validation.annotations.CurrencyIsValid;
 
 @Tag(name = "Currency Controller")
+@RequestMapping("/currencies")
 public interface CurrencyController {
 
     @Operation(summary = "Get the exchange rate relative to the ruble")

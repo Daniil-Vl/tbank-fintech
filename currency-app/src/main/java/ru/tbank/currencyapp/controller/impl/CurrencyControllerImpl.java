@@ -1,7 +1,6 @@
 package ru.tbank.currencyapp.controller.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.tbank.currencyapp.controller.CurrencyController;
 import ru.tbank.currencyapp.dto.CurrencyConvertRequestDTO;
@@ -10,7 +9,6 @@ import ru.tbank.currencyapp.dto.CurrencyRateDTO;
 import ru.tbank.currencyapp.service.currency.CurrencyService;
 
 @RestController
-@RequestMapping("/currencies")
 @RequiredArgsConstructor
 public class CurrencyControllerImpl implements CurrencyController {
 
