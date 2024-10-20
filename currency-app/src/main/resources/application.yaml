@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: currency-app
+  devtools:
+    restart:
+      enabled: true
+  cache:
+    caffeine:
+      spec: "expireAfterWrite=1h"
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      central-bank-system:
+        failure-rate-threshold: 50
+        slow-call-rate-threshold: 90
+        slow-call-duration-threshold:
+          seconds: 5
+
+app:
+  central-bank-currencies-url: http://www.cbr.ru/scripts/XML_daily.asp
+  central-bank-cache-name: "cbCurrenciesCache"
+
+logging:
+  level:
+    web: debug
