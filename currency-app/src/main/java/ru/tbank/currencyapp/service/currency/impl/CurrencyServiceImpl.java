@@ -11,6 +11,7 @@ import ru.tbank.currencyapp.exception.exceptions.CurrencyNotFoundException;
 import ru.tbank.currencyapp.service.currency.CurrencyService;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Map;
 
 @Service
@@ -42,7 +43,7 @@ public class CurrencyServiceImpl implements CurrencyService {
         CBCurrencyResponseDTO toCurrencyDTO = currencies.get(toCurrency);
 
         BigDecimal rubAmount = fromCurrencyDTO.vUnitRate().multiply(amount);
-        BigDecimal converted = rubAmount.divide(toCurrencyDTO.vUnitRate());
+        BigDecimal converted = rubAmount.divide(toCurrencyDTO.vUnitRate(), 6, RoundingMode.HALF_EVEN);
 
         return new CurrencyConvertedDTO(
                 fromCurrency,
