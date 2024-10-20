@@ -1,80 +1,108 @@
 package ru.tbank.springapp.client;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestClient;
-import org.testcontainers.junit.jupiter.Container;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
-import org.wiremock.integrations.testcontainers.WireMockContainer;
 import ru.tbank.springapp.client.impl.KudagoClientImpl;
 import ru.tbank.springapp.dto.CategoryDTO;
 import ru.tbank.springapp.dto.CityDTO;
+import ru.tbank.springapp.dto.events.kudago.EventKudaGODTO;
+import ru.tbank.springapp.dto.events.kudago.EventListDTO;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
+import java.util.concurrent.*;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Testcontainers
-class KudagoClientTest {
+class KudagoClientTest extends WireMockTest {
 
-    @Container
-    private static final WireMockContainer wireMockContainer = new WireMockContainer(
-            DockerImageName.parse("wiremock/wiremock:2.35.0")
-    );
+    private static final Path PATH_TO_CATEGORIES = Path.of("src", "test", "resources", "client", "categories.json");
+    private static final Path PATH_TO_CITIES = Path.of("src", "test", "resources", "client", "cities.json");
+    private static final Path PATH_TO_EVENTS = Path.of("src", "test", "resources", "client", "events.json");
+    private static String CATEGORIES_BODY;
+    private static String CITIES_BODY;
+    private static String EVENTS_BODY;
 
     private static KudagoClient client;
 
-    @BeforeAll
-    static void setUp() {
-        wireMockContainer.start();
-        WireMock.configureFor(wireMockContainer.getHost(), wireMockContainer.getFirstMappedPort());
-
+    static void initClient() {
         RestClient restClient = RestClient.builder()
                 .baseUrl(wireMockContainer.getBaseUrl())
                 .build();
 
-        client = new KudagoClientImpl(restClient);
+        WebClient webClient = WebClient.builder()
+                .baseUrl(wireMockContainer.getBaseUrl())
+                .build();
+
+        Semaphore clientSemaphore = new Semaphore(2);
+
+        client = new KudagoClientImpl(restClient, webClient, clientSemaphore);
     }
 
-    @BeforeEach
-    void setUpStubs() throws IOException {
-        Path pathToCategories = Path.of("src", "test", "resources", "client", "categories.json");
-        String categoriesBody = Files.readString(pathToCategories);
+    static void initResponseBodies() throws IOException {
+        CATEGORIES_BODY = Files.readString(PATH_TO_CATEGORIES);
+        CITIES_BODY = Files.readString(PATH_TO_CITIES);
+        EVENTS_BODY = Files.readString(PATH_TO_EVENTS);
+    }
 
-        Path pathToCities = Path.of("src", "test", "resources", "client", "cities.json");
-        String citiesBody = Files.readString(pathToCities);
+    @BeforeAll
+    static void setUp() throws IOException {
+        initServer();
+        initClient();
+        initResponseBodies();
+    }
 
+    private static @NotNull EventListDTO getEventListDTO(LocalDate fromDate, LocalDate toDate) {
+        EventKudaGODTO first = new EventKudaGODTO(
+                1,
+                List.of(new EventKudaGODTO.Date(fromDate, toDate)),
+                "first event",
+                "first event description",
+                "от 1000 руб",
+                false,
+                "first site url"
+        );
+        EventKudaGODTO second = new EventKudaGODTO(
+                2,
+                List.of(new EventKudaGODTO.Date(fromDate, toDate)),
+                "second event",
+                "second event description",
+                "",
+                true,
+                "second site url"
+        );
+        return new EventListDTO(2, null, null, List.of(first, second));
+    }
+
+    @Test
+    void givenClient_whenGetCategories_thenSuccessfullyGetAllCategories() {
         stubFor(
                 get("/place-categories/")
                         .willReturn(
                                 aResponse()
                                         .withStatus(200)
-                                        .withHeader("Content-Type", APPLICATION_JSON_VALUE)
-                                        .withBody(categoriesBody)
+                                        .withHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                                        .withBody(CATEGORIES_BODY)
                         )
         );
 
-        stubFor(
-                get("/locations/")
-                        .willReturn(
-                                aResponse()
-                                        .withStatus(200)
-                                        .withHeader("Content-Type", APPLICATION_JSON_VALUE)
-                                        .withBody(citiesBody)
-                        )
-        );
-    }
-
-    @Test
-    void givenClient_whenGetCategories_thenSuccessfullyGetAllCategories() {
         List<CategoryDTO> expectedCategories = List.of(
                 new CategoryDTO("fir", "first"),
                 new CategoryDTO("sec", "second")
@@ -99,6 +127,16 @@ class KudagoClientTest {
 
     @Test
     void givenClient_whenGetCities_thenSuccessfullyGetAllCities() {
+        stubFor(
+                get("/locations/")
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(200)
+                                        .withHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                                        .withBody(CITIES_BODY)
+                        )
+        );
+
         List<CityDTO> expectedCities = List.of(
                 new CityDTO("fir", "first"),
                 new CityDTO("sec", "second")
@@ -119,6 +157,97 @@ class KudagoClientTest {
         List<CityDTO> cities = client.getCities();
 
         Assertions.assertIterableEquals(List.of(), cities);
+    }
+
+    @Test
+    void givenSlowApi_whenGetCategoriesInMultipleThreads_thenSemaphoreLimitsRequests() throws InterruptedException {
+        WireMock.resetAllRequests();
+        stubFor(
+                get("/place-categories/")
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(200)
+                                        .withHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                                        .withBody(CATEGORIES_BODY)
+                                        .withFixedDelay(1000)
+                        )
+        );
+
+        try (ExecutorService executorService = Executors.newFixedThreadPool(10)) {
+            long startTime = System.nanoTime();
+
+            for (int i = 0; i < 10; i++)
+                executorService.submit(() -> client.getCategories());
+
+            executorService.shutdown();
+            boolean awaited = executorService.awaitTermination(6, TimeUnit.SECONDS);
+
+            long endTime = System.nanoTime();
+
+            assertTrue(endTime - startTime > Duration.ofSeconds(5).toNanos());
+            assertTrue(awaited);
+            verify(10, getRequestedFor(urlEqualTo("/place-categories/")));
+        }
+    }
+
+    @Test
+    void givenFromAndToDate_whenGetEventsAsync_thenSuccessfullyReturnEvents() throws ExecutionException, InterruptedException {
+        LocalDate fromDate = LocalDateTime.ofEpochSecond(1000, 0, ZoneOffset.UTC).toLocalDate();
+        LocalDate toDate = LocalDateTime.ofEpochSecond(2000, 0, ZoneOffset.UTC).toLocalDate();
+
+        String fromDateString = String.valueOf(fromDate.atStartOfDay().atZone(ZoneOffset.UTC).toEpochSecond());
+        String toDateString = String.valueOf(toDate.plusDays(1).atStartOfDay().atZone(ZoneOffset.UTC).toEpochSecond());
+
+        EventListDTO expectedList = getEventListDTO(fromDate, toDate);
+
+        stubFor(
+                get(urlPathEqualTo("/events/"))
+                        .withQueryParam("fields", equalTo("id,dates,title,description,price,is_free,site_url"))
+                        .withQueryParam("actual_since", equalTo(fromDateString))
+                        .withQueryParam("actual_until", equalTo(toDateString))
+                        .withQueryParam("order_by", equalTo("-publication_date"))
+                        .withQueryParam("location", equalTo("spb"))
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(200)
+                                        .withHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                                        .withBody(EVENTS_BODY)
+                        )
+        );
+
+        EventListDTO actualList = client.getEvents(fromDate, toDate).get();
+
+        assertEquals(expectedList, actualList);
+    }
+
+    @Test
+    void givenFromAndToDate_whenGetEventsReactive_thenSuccessfullyReturnEvents() {
+        LocalDate fromDate = LocalDateTime.ofEpochSecond(1000, 0, ZoneOffset.UTC).toLocalDate();
+        LocalDate toDate = LocalDateTime.ofEpochSecond(2000, 0, ZoneOffset.UTC).toLocalDate();
+
+        String fromDateString = String.valueOf(fromDate.atStartOfDay().atZone(ZoneOffset.UTC).toEpochSecond());
+        String toDateString = String.valueOf(toDate.plusDays(1).atStartOfDay().atZone(ZoneOffset.UTC).toEpochSecond());
+
+        EventListDTO expectedList = getEventListDTO(fromDate, toDate);
+
+        stubFor(
+                get(urlPathEqualTo("/events/"))
+                        .withQueryParam("fields", equalTo("id,dates,title,description,price,is_free,site_url"))
+                        .withQueryParam("actual_since", equalTo(fromDateString))
+                        .withQueryParam("actual_until", equalTo(toDateString))
+                        .withQueryParam("order_by", equalTo("-publication_date"))
+                        .withQueryParam("location", equalTo("spb"))
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(200)
+                                        .withHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                                        .withBody(EVENTS_BODY)
+                        )
+        );
+
+        EventListDTO actualList = client.getEventsReactive(fromDate, toDate).block();
+
+        assertEquals(expectedList, actualList);
     }
 
 }

@@ -1,0 +1,35 @@
+{
+  "count": 2,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "dates": [
+        {
+          "start": 1000,
+          "end": 2000
+        }
+      ],
+      "title": "first event",
+      "description": "first event description",
+      "price": "от 1000 руб",
+      "is_free": false,
+      "site_url": "first site url"
+    },
+    {
+      "id": 2,
+      "dates": [
+        {
+          "start": 1000,
+          "end": 2000
+        }
+      ],
+      "title": "second event",
+      "description": "second event description",
+      "price": "",
+      "is_free": true,
+      "site_url": "second site url"
+    }
+  ]
+}
