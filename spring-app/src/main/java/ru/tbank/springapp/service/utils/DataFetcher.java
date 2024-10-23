@@ -9,7 +9,7 @@ import ru.tbank.springapp.aspect.Timed;
 import ru.tbank.springapp.client.KudagoClient;
 import ru.tbank.springapp.dao.Repository;
 import ru.tbank.springapp.dto.CategoryDTO;
-import ru.tbank.springapp.dto.CityDTO;
+import ru.tbank.springapp.dto.PlaceDTO;
 import ru.tbank.springapp.model.Category;
 import ru.tbank.springapp.model.City;
 
@@ -32,7 +32,7 @@ class DataFetcher {
         List<CategoryDTO> categories = client.getCategories();
         log.info("Fetched categories: {}", categories);
 
-        List<CityDTO> cities = client.getCities();
+        List<PlaceDTO> cities = client.getCities();
         log.info("Fetched cities: {}", cities);
 
         log.info("Saving fetched data...");

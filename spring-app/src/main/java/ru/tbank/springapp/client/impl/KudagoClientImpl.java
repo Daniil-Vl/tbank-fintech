@@ -8,7 +8,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClient;
 import ru.tbank.springapp.client.KudagoClient;
 import ru.tbank.springapp.dto.CategoryDTO;
-import ru.tbank.springapp.dto.CityDTO;
+import ru.tbank.springapp.dto.PlaceDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,10 +41,10 @@ public class KudagoClientImpl implements KudagoClient {
     }
 
     @Override
-    public List<CityDTO> getCities() {
+    public List<PlaceDTO> getCities() {
         log.info("Try to get all cities from Kudago API");
 
-        List<CityDTO> cities = new ArrayList<>();
+        List<PlaceDTO> cities = new ArrayList<>();
 
         try {
             cities = restClient
