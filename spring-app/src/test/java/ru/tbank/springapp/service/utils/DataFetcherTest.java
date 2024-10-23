@@ -13,7 +13,7 @@ import ru.tbank.springapp.model.City;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@SpringBootTest
+@SpringBootTest(properties = "spring.liquibase.enabled=false")
 @ExtendWith(MockitoExtension.class)
 class DataFetcherTest {
 
@@ -31,4 +31,5 @@ class DataFetcherTest {
         verify(client, times(1)).getCategories();
         verify(client, times(1)).getCities();
     }
+
 }
