@@ -12,7 +12,7 @@ import org.testcontainers.utility.DockerImageName;
 import org.wiremock.integrations.testcontainers.WireMockContainer;
 import ru.tbank.springapp.client.impl.KudagoClientImpl;
 import ru.tbank.springapp.dto.CategoryDTO;
-import ru.tbank.springapp.dto.CityDTO;
+import ru.tbank.springapp.dto.PlaceDTO;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -99,12 +99,12 @@ class KudagoClientTest {
 
     @Test
     void givenClient_whenGetCities_thenSuccessfullyGetAllCities() {
-        List<CityDTO> expectedCities = List.of(
-                new CityDTO("fir", "first"),
-                new CityDTO("sec", "second")
+        List<PlaceDTO> expectedCities = List.of(
+                new PlaceDTO("fir", "first"),
+                new PlaceDTO("sec", "second")
         );
 
-        List<CityDTO> cities = client.getCities();
+        List<PlaceDTO> cities = client.getCities();
 
         Assertions.assertIterableEquals(expectedCities, cities);
     }
@@ -116,7 +116,7 @@ class KudagoClientTest {
                         .willReturn(aResponse().withStatus(500))
         );
 
-        List<CityDTO> cities = client.getCities();
+        List<PlaceDTO> cities = client.getCities();
 
         Assertions.assertIterableEquals(List.of(), cities);
     }
