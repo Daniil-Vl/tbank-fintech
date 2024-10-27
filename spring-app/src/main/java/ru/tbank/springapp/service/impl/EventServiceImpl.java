@@ -38,12 +38,10 @@ public class EventServiceImpl implements EventService {
     public EventDTO findById(long id) {
         log.info("Trying to find event by id {}", id);
 
-        Optional<EventEntity> optionalEvent = eventRepository.findById(id);
+        EventEntity event = eventRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Event with id " + id + " not found"));
 
-        if (optionalEvent.isEmpty())
-            throw new ResourceNotFoundException("Event with id " + id + " not found");
-
-        return EventDTO.fromEvent(optionalEvent.get());
+        return EventDTO.fromEvent(event);
     }
 
     @Override

@@ -11,7 +11,6 @@ import ru.tbank.springapp.model.entities.PlaceEntity;
 import ru.tbank.springapp.service.PlaceService;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,12 +33,10 @@ public class PlaceServiceImpl implements PlaceService {
     public PlaceDTO findById(String slug) {
         log.info("Trying to find city by id {}", slug);
 
-        Optional<PlaceEntity> placeEntity = placeRepository.findBySlug(slug);
+        PlaceEntity placeEntity = placeRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResourceNotFoundException("City with slug " + slug + " not found"));
 
-        if (placeEntity.isEmpty())
-            throw new ResourceNotFoundException("City with slug " + slug + " not found");
-
-        return PlaceDTO.fromPlaceEntity(placeEntity.get());
+        return PlaceDTO.fromPlaceEntity(placeEntity);
     }
 
     @Override
