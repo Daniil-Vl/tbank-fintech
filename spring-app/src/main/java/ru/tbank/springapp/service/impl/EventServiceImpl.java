@@ -59,11 +59,12 @@ public class EventServiceImpl implements EventService {
 
         PlaceEntity place = optionalPlace.get();
 
-        EventEntity eventEntity = new EventEntity();
-        eventEntity.setPlace(place);
-        eventEntity.setName(name);
-        eventEntity.setSlug(slug);
-        eventEntity.setStartDate(date);
+        EventEntity eventEntity = EventEntity.builder()
+                .place(place)
+                .name(name)
+                .slug(slug)
+                .startDate(date)
+                .build();
 
         eventRepository.save(eventEntity);
         log.info("Event with id {} created", eventEntity.getId());

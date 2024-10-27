@@ -46,21 +46,24 @@ public class EventsIntegrationTest extends AbstractIntegrationTest {
     // Get all events
     @Test
     void givenEvents_whenRequestGetEvents_thenRetrieveAllEvents() throws Exception {
-        PlaceEntity placeEntity = new PlaceEntity();
-        placeEntity.setName("Saint-Petersburg");
-        placeEntity.setSlug("spb");
+        PlaceEntity placeEntity = PlaceEntity.builder()
+                .name("Saint-Petersburg")
+                .slug("spb")
+                .build();
 
-        EventEntity event1 = new EventEntity();
-        event1.setStartDate(LocalDate.now());
-        event1.setName("first event");
-        event1.setSlug("first");
-        event1.setPlace(placeEntity);
+        EventEntity event1 = EventEntity.builder()
+                .startDate(LocalDate.now())
+                .name("first event")
+                .slug("first")
+                .place(placeEntity)
+                .build();
 
-        EventEntity event2 = new EventEntity();
-        event2.setStartDate(LocalDate.now());
-        event2.setName("second event");
-        event2.setSlug("second");
-        event2.setPlace(placeEntity);
+        EventEntity event2 = EventEntity.builder()
+                .startDate(LocalDate.now())
+                .name("second event")
+                .slug("second")
+                .place(placeEntity)
+                .build();
 
         placeRepository.save(placeEntity);
         event1 = eventRepository.save(event1);
@@ -84,15 +87,17 @@ public class EventsIntegrationTest extends AbstractIntegrationTest {
     // Get event by id
     @Test
     void givenEventId_whenRequestGetEventById_thenReturnEvent() throws Exception {
-        PlaceEntity placeEntity = new PlaceEntity();
-        placeEntity.setName("Saint-Petersburg");
-        placeEntity.setSlug("spb");
+        PlaceEntity placeEntity = PlaceEntity.builder()
+                .name("Saint-Petersburg")
+                .slug("spb")
+                .build();
 
-        EventEntity event = new EventEntity();
-        event.setStartDate(LocalDate.now());
-        event.setName("first event");
-        event.setSlug("first");
-        event.setPlace(placeEntity);
+        EventEntity event = EventEntity.builder()
+                .startDate(LocalDate.now())
+                .name("first event")
+                .slug("first")
+                .place(placeEntity)
+                .build();
 
         placeRepository.save(placeEntity);
         event = eventRepository.save(event);
@@ -120,9 +125,10 @@ public class EventsIntegrationTest extends AbstractIntegrationTest {
     // Create event
     @Test
     void givenEventRequestDTO_whenRequestCreateEvent_thenSuccessfullyCreatesEvent() throws Exception {
-        PlaceEntity placeEntity = new PlaceEntity();
-        placeEntity.setName("Saint-Petersburg");
-        placeEntity.setSlug("spb");
+        PlaceEntity placeEntity = PlaceEntity.builder()
+                .name("Saint-Petersburg")
+                .slug("spb")
+                .build();
         placeRepository.save(placeEntity);
 
         EventRequestDTO eventRequestDTO = new EventRequestDTO(
@@ -168,17 +174,18 @@ public class EventsIntegrationTest extends AbstractIntegrationTest {
     // Update event
     @Test
     void givenEventRequestDTO_whenRequestUpdateEvent_thenSuccessfullyUpdatesEvent() throws Exception {
-        PlaceEntity placeEntity = new PlaceEntity();
-        placeEntity.setName("Saint-Petersburg");
-        placeEntity.setSlug("spb");
+        PlaceEntity placeEntity = PlaceEntity.builder()
+                .name("Saint-Petersburg")
+                .slug("spb")
+                .build();
         placeRepository.save(placeEntity);
 
-        EventEntity event = new EventEntity();
-        event.setId(1L);
-        event.setStartDate(LocalDate.now());
-        event.setName("first event");
-        event.setSlug("first");
-        event.setPlace(placeEntity);
+        EventEntity event = EventEntity.builder()
+                .startDate(LocalDate.now())
+                .name("first event")
+                .slug("first")
+                .place(placeEntity)
+                .build();
         event = eventRepository.save(event);
 
         EventRequestDTO eventRequestDTO = new EventRequestDTO(
@@ -205,17 +212,18 @@ public class EventsIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void givenNonExistentPlaceSlug_whenRequestUpdateEvent_thenReturnNotFound() throws Exception {
-        PlaceEntity placeEntity = new PlaceEntity();
-        placeEntity.setName("Saint-Petersburg");
-        placeEntity.setSlug("spb");
+        PlaceEntity placeEntity = PlaceEntity.builder()
+                .name("Saint-Petersburg")
+                .slug("spb")
+                .build();
         placeRepository.save(placeEntity);
 
-        EventEntity event = new EventEntity();
-        event.setId(1L);
-        event.setStartDate(LocalDate.now());
-        event.setName("first event");
-        event.setSlug("first");
-        event.setPlace(placeEntity);
+        EventEntity event = EventEntity.builder()
+                .startDate(LocalDate.now())
+                .name("first event")
+                .slug("first")
+                .place(placeEntity)
+                .build();
         event = eventRepository.save(event);
 
         EventRequestDTO eventRequestDTO = new EventRequestDTO(
@@ -236,17 +244,18 @@ public class EventsIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void givenNonExistentEvent_whenRequestUpdateEvent_thenReturnNotFound() throws Exception {
-        PlaceEntity placeEntity = new PlaceEntity();
-        placeEntity.setName("Saint-Petersburg");
-        placeEntity.setSlug("spb");
+        PlaceEntity placeEntity = PlaceEntity.builder()
+                .name("Saint-Petersburg")
+                .slug("spb")
+                .build();
         placeRepository.save(placeEntity);
 
-        EventEntity event = new EventEntity();
-        event.setId(1L);
-        event.setStartDate(LocalDate.now());
-        event.setName("first event");
-        event.setSlug("first");
-        event.setPlace(placeEntity);
+        EventEntity event = EventEntity.builder()
+                .startDate(LocalDate.now())
+                .name("first event")
+                .slug("first")
+                .place(placeEntity)
+                .build();
         event = eventRepository.save(event);
 
         EventRequestDTO eventRequestDTO = new EventRequestDTO(
@@ -268,17 +277,18 @@ public class EventsIntegrationTest extends AbstractIntegrationTest {
     // Delete
     @Test
     void givenEventId_whenRequestDeleteEvent_thenSuccessfullyDeleteEvent() throws Exception {
-        PlaceEntity placeEntity = new PlaceEntity();
-        placeEntity.setName("Saint-Petersburg");
-        placeEntity.setSlug("spb");
+        PlaceEntity placeEntity = PlaceEntity.builder()
+                .name("Saint-Petersburg")
+                .slug("spb")
+                .build();
         placeRepository.save(placeEntity);
 
-        EventEntity event = new EventEntity();
-        event.setId(1L);
-        event.setStartDate(LocalDate.now());
-        event.setName("first event");
-        event.setSlug("first");
-        event.setPlace(placeEntity);
+        EventEntity event = EventEntity.builder()
+                .startDate(LocalDate.now())
+                .name("first event")
+                .slug("first")
+                .place(placeEntity)
+                .build();
         event = eventRepository.save(event);
 
         mockMvc
