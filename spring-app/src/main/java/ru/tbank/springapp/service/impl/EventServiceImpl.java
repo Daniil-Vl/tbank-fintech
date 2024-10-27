@@ -45,6 +45,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDTO create(LocalDate date, String name, String slug, String placeSlug) {
         log.info("Trying to create event with date = {}, name = {}, slug = {}, place slug = {}", date, name, slug, placeSlug);
 
