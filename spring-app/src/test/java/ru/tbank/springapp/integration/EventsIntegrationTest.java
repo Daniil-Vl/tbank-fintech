@@ -5,7 +5,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.tbank.springapp.dao.jpa.EventRepository;
 import ru.tbank.springapp.dao.jpa.PlaceRepository;
@@ -13,7 +12,6 @@ import ru.tbank.springapp.dto.EventDTO;
 import ru.tbank.springapp.dto.EventRequestDTO;
 import ru.tbank.springapp.model.entities.EventEntity;
 import ru.tbank.springapp.model.entities.PlaceEntity;
-import ru.tbank.springapp.service.EventService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,12 +27,6 @@ public class EventsIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private JdbcClient jdbcClient;
-
-    @Autowired
-    private EventService eventService;
 
     @Autowired
     private ObjectMapper objectMapper;
