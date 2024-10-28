@@ -144,7 +144,6 @@ class PlaceServiceImplTest {
     // Delete
     @Test
     void givenExistingPlace_whenDelete_thenSuccessfullyDeleted() {
-        String name = "first";
         String slug = "fir";
 
         when(
