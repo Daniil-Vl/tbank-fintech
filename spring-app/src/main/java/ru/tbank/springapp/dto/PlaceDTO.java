@@ -2,7 +2,6 @@ package ru.tbank.springapp.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;
-import ru.tbank.springapp.model.City;
 import ru.tbank.springapp.model.entities.PlaceEntity;
 
 public record PlaceDTO(
