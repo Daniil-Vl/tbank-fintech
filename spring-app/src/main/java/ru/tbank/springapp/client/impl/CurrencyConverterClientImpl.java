@@ -3,7 +3,6 @@ package ru.tbank.springapp.client.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -22,29 +21,26 @@ public class CurrencyConverterClientImpl implements CurrencyConverterClient {
 
     private final WebClient currencyWebClient;
 
-    @Async
     @Override
     public CompletableFuture<CurrencyRateDTO> getCurrencyToRubRate(String currency) {
         log.info("Trying to get currency rate {}...", currency);
-        CurrencyRateDTO currencyRateDTO = currencyWebClient
+        return currencyWebClient
                 .get()
                 .uri(uriBuilder -> uriBuilder.
                         path("/rates/{code}")
                         .build(currency)
                 ).retrieve()
                 .bodyToMono(CurrencyRateDTO.class)
-                .block();
-        return CompletableFuture.completedFuture(currencyRateDTO);
+                .toFuture();
     }
 
-    @Async
     @Override
     public CompletableFuture<CurrencyConvertedDTO> convertCurrency(String fromCurrency, String toCurrency, BigDecimal amount) {
         log.info("Trying to convert currency {} to {} with amount {}", fromCurrency, toCurrency, amount);
 
         CurrencyConvertRequestDTO body = new CurrencyConvertRequestDTO(fromCurrency, toCurrency, amount);
 
-        CurrencyConvertedDTO convertedDTO = currencyWebClient
+        return currencyWebClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
                         .path("/convert")
@@ -54,9 +50,7 @@ public class CurrencyConverterClientImpl implements CurrencyConverterClient {
                 .bodyValue(body)
                 .retrieve()
                 .bodyToMono(CurrencyConvertedDTO.class)
-                .block();
-
-        return CompletableFuture.completedFuture(convertedDTO);
+                .toFuture();
     }
 
     @Override
