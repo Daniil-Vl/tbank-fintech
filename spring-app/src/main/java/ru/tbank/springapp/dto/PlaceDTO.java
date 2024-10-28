@@ -12,8 +12,4 @@ public record PlaceDTO(
     public static PlaceDTO fromPlaceEntity(PlaceEntity placeEntity) {
         return new PlaceDTO(placeEntity.getSlug(), placeEntity.getName());
     }
-
-    public City toCity() {
-        return new City(slug, name);
-    }
 }
