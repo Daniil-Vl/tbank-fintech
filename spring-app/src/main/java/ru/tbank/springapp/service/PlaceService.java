@@ -11,7 +11,7 @@ public interface PlaceService {
 
     PlaceDTO create(String slug, String name);
 
-    int update(String slug, String name);
+    int update(String slug, String newSlug, String name);
 
     int delete(String slug);
 }

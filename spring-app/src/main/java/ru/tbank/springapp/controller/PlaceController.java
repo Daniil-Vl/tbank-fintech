@@ -42,7 +42,7 @@ public class PlaceController {
             @PathVariable @NotBlank String id,
             @RequestBody @Valid PlaceDTO placeDTO
     ) {
-        placeService.update(id, placeDTO.name());
+        placeService.update(id, placeDTO.slug(), placeDTO.name());
     }
 
     @DeleteMapping("/{id}")

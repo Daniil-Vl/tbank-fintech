@@ -56,10 +56,10 @@ public class PlaceServiceImpl implements PlaceService {
 
     @Override
     @Transactional
-    public int update(String slug, String name) {
+    public int update(String slug, String newSlug, String name) {
         log.info("Trying to update city with id {}", slug);
 
-        int rowsAffected = placeRepository.updateBySlug(slug, name);
+        int rowsAffected = placeRepository.updateBySlug(slug, newSlug, name);
 
         if (rowsAffected == 0)
             throw new ResourceNotFoundException("Place with slug " + slug + " not found");

@@ -17,10 +17,11 @@ public interface PlaceRepository extends JpaRepository<PlaceEntity, Long> {
 
     Optional<PlaceEntity> findBySlug(String slug);
 
-    @Query(value = "UPDATE places SET name = :name WHERE slug = :slug", nativeQuery = true)
+    @Query(value = "UPDATE places SET name = :name, slug = :newSlug WHERE slug = :slug", nativeQuery = true)
     @Modifying
     int updateBySlug(
             @Param("slug") String slug,
+            @Param(("newSlug")) String newSlug,
             @Param("name") String name
     );
 

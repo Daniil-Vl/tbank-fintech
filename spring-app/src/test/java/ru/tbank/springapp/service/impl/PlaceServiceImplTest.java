@@ -113,14 +113,14 @@ class PlaceServiceImplTest {
         String newName = "second";
 
         when(
-                placeRepository.updateBySlug(slug, newName)
+                placeRepository.updateBySlug(slug, slug, newName)
         ).thenReturn(
                 1
         );
 
-        service.update(slug, newName);
+        service.update(slug, slug, newName);
 
-        verify(placeRepository, times(1)).updateBySlug(slug, newName);
+        verify(placeRepository, times(1)).updateBySlug(slug, slug, newName);
     }
 
     @Test
@@ -129,16 +129,16 @@ class PlaceServiceImplTest {
         String newName = "second";
 
         when(
-                placeRepository.updateBySlug(slug, newName)
+                placeRepository.updateBySlug(slug, slug, newName)
         ).thenReturn(
                 0
         );
 
         assertThrows(
                 ResourceNotFoundException.class,
-                () -> service.update(slug, newName)
+                () -> service.update(slug, slug, newName)
         );
-        verify(placeRepository, times(1)).updateBySlug(slug, newName);
+        verify(placeRepository, times(1)).updateBySlug(slug, slug, newName);
     }
 
     // Delete
