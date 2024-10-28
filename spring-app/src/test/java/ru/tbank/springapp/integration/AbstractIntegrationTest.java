@@ -13,7 +13,7 @@ import ru.tbank.springapp.WireMockTest;
 @Testcontainers
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {"spring.liquibase.enabled=true"}
+        properties = {"spring.liquibase.enabled=true", "spring.main.allow-bean-definition-overriding=true"}
 )
 @ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
