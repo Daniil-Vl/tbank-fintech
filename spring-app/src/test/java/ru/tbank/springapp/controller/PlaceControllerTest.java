@@ -106,7 +106,7 @@ class PlaceControllerTest {
                 ).andDo(print())
                 .andExpect(status().isOk());
 
-        verify(service, times(1)).update(placeDTO.slug(), placeDTO.name());
+        verify(service, times(1)).update(placeDTO.slug(), placeDTO.slug(), placeDTO.name());
     }
 
     // UpdatePlace (fail)
@@ -116,7 +116,7 @@ class PlaceControllerTest {
         String id = placeDTO.slug();
         String requestBody = mapper.writeValueAsString(placeDTO);
 
-        when(service.update(placeDTO.slug(), placeDTO.name())).thenThrow(ResourceNotFoundException.class);
+        when(service.update(placeDTO.slug(), placeDTO.slug(), placeDTO.name())).thenThrow(ResourceNotFoundException.class);
 
         mockMvc
                 .perform(
