@@ -8,3 +8,5 @@ CREATE TABLE events
     slug     VARCHAR(255)          NOT NULL,
     place_id BIGINT                NOT NULL REFERENCES places (id) ON DELETE CASCADE
 )
+
+-- rollback DROP TABLE events

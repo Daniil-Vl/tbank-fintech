@@ -6,3 +6,5 @@ CREATE TABLE places
     slug VARCHAR(255)          NOT NULL,
     name VARCHAR(255)          NOT NULL
 )
+
+-- rollback DROP TABLE places
