@@ -99,7 +99,6 @@ public class PlaceIntegrationTest extends AbstractIntegrationTest {
     // Create place
     @Test
     void givenPlaceDTO_whenRequestCreatePlace_thenCreatePlace() throws Exception {
-        // TODO
         PlaceDTO placeDTO = new PlaceDTO("spb", "Saint-Petersburg");
         String requestBody = objectMapper.writeValueAsString(placeDTO);
 
