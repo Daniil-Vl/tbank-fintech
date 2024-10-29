@@ -1,6 +1,5 @@
 package ru.tbank.springapp.service;
 
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.tbank.springapp.dto.events.EventDTO;
 

@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.tbank.springapp.dto.events.EventDTO;
 
@@ -19,7 +18,7 @@ public interface EventController {
     @GetMapping("/events-async")
     CompletableFuture<List<EventDTO>> getEvents(
             @RequestParam BigDecimal budget,
-            @RequestParam String currency, 
+            @RequestParam String currency,
             @RequestParam(required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate toDate
     );
