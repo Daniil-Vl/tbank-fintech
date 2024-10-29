@@ -3,7 +3,6 @@ package ru.tbank.springapp.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.tbank.springapp.client.CurrencyConverterClient;
 import ru.tbank.springapp.client.KudagoClient;
@@ -44,17 +43,21 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Flux<EventDTO> getEventsReactive(BigDecimal budget, String currency, LocalDate fromDate, LocalDate toDate) {
-        Mono<EventListDTO> events = kudagoClient.getEventsReactive(fromDate, toDate);
-        Mono<CurrencyConvertedDTO> rubConvertedDTO = currencyConverterClient.convertCurrencyReactively(currency, "RUB", budget);
+    public Mono<List<EventDTO>> getEventsReactive(BigDecimal budget, String currency, LocalDate fromDate, LocalDate toDate) {
+        Mono<EventListDTO> eventsMono = kudagoClient.getEventsReactive(fromDate, toDate);
+        Mono<CurrencyConvertedDTO> convertedBudgetMono = currencyConverterClient.convertCurrencyReactively(currency, "RUB", budget);
 
-        BigDecimal rubAmount = rubConvertedDTO.block().convertedAmount();
-
-        return events
-                .flatMapMany(eventListDTO -> Flux.fromIterable(eventListDTO.events()))
-                .log()
-                .filter(eventKudaGODTO -> canAffordEvent(rubAmount, eventKudaGODTO))
-                .map(EventKudaGODTO::toEventDTO);
+        return eventsMono
+                .zipWith(convertedBudgetMono)
+                .map(tuple -> {
+                    BigDecimal rubAmount = tuple.getT2().convertedAmount();
+                    List<EventKudaGODTO> events = tuple.getT1().events();
+                    return events
+                            .stream()
+                            .filter(eventKudaGODTO -> canAffordEvent(rubAmount, eventKudaGODTO))
+                            .map(EventKudaGODTO::toEventDTO)
+                            .toList();
+                });
     }
 
     private List<EventDTO> findAffordableEvents(BigDecimal budget, EventListDTO events) {
@@ -82,7 +85,7 @@ public class EventServiceImpl implements EventService {
         Matcher doMatcher = DO_PATTERN.matcher(event.price());
 
         // Case when there are no numbers (skip event)
-        if (! numMatcher.find())
+        if (!numMatcher.find())
             return false;
 
         int price = Integer.parseInt(numMatcher.group());
@@ -95,7 +98,7 @@ public class EventServiceImpl implements EventService {
 
         // When we didn't find "до"
         // Cases: "1500 руб", "от 1500 руб", "взрослый билет - 600 руб"
-        if (! doMatcher.find()) {
+        if (!doMatcher.find()) {
             return budget.compareTo(new BigDecimal(price)) >= 0;
         }
 

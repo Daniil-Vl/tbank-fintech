@@ -3,6 +3,7 @@ package ru.tbank.springapp.controller.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.tbank.springapp.controller.EventController;
 import ru.tbank.springapp.dto.events.EventDTO;
 import ru.tbank.springapp.service.EventService;
@@ -24,7 +25,7 @@ public class EventControllerImpl implements EventController {
     }
 
     @Override
-    public Flux<EventDTO> getEventsReactive(BigDecimal budget, String currency, LocalDate fromDate, LocalDate toDate) throws InterruptedException {
+    public Mono<List<EventDTO>> getEventsReactive(BigDecimal budget, String currency, LocalDate fromDate, LocalDate toDate) throws InterruptedException {
         return eventService.getEventsReactive(budget, currency, fromDate, toDate);
     }
 

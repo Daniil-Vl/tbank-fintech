@@ -1,6 +1,7 @@
 package ru.tbank.springapp.service;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.tbank.springapp.dto.events.EventDTO;
 
 import java.math.BigDecimal;
@@ -12,5 +13,5 @@ public interface EventService {
 
     CompletableFuture<List<EventDTO>> getAffordableEvents(BigDecimal budget, String currency, LocalDate fromDate, LocalDate toDate);
 
-    Flux<EventDTO> getEventsReactive(BigDecimal budget, String currency, LocalDate fromDate, LocalDate toDate);
+    Mono<List<EventDTO>> getEventsReactive(BigDecimal budget, String currency, LocalDate fromDate, LocalDate toDate);
 }
