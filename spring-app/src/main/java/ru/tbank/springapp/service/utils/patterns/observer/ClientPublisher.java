@@ -7,14 +7,15 @@ import ru.tbank.springapp.client.impl.KudagoClientImpl;
 import ru.tbank.springapp.dto.CategoryDTO;
 import ru.tbank.springapp.dto.CityDTO;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
 public class ClientPublisher extends KudagoClientImpl implements Publisher {
 
-    private final List<Subscriber> subscribers = new ArrayList<>();
+    private final Set<Subscriber> subscribers = new HashSet<>();
 
     public ClientPublisher(RestClient restClient) {
         super(restClient);
