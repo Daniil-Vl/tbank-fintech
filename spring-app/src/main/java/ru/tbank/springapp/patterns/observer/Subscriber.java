@@ -1,4 +1,4 @@
-package ru.tbank.springapp.service.utils.patterns.observer;
+package ru.tbank.springapp.patterns.observer;
 
 import java.util.List;
 

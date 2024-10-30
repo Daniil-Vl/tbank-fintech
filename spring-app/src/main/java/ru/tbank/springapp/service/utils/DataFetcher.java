@@ -7,8 +7,8 @@ import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import ru.tbank.springapp.aspect.Timed;
-import ru.tbank.springapp.service.utils.patterns.observer.ClientPublisher;
-import ru.tbank.springapp.service.utils.patterns.observer.Subscriber;
+import ru.tbank.springapp.patterns.observer.ClientPublisher;
+import ru.tbank.springapp.patterns.observer.Subscriber;
 
 @Service
 @RequiredArgsConstructor

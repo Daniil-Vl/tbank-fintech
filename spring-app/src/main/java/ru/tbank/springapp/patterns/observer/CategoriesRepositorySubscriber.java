@@ -1,4 +1,4 @@
-package ru.tbank.springapp.service.utils.patterns.observer;
+package ru.tbank.springapp.patterns.observer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
