@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 public class CustomLinkedList<T> {
 
@@ -115,9 +116,13 @@ public class CustomLinkedList<T> {
         return size;
     }
 
+    public Iterator<T> iterator() {
+        return new CustomIterator<>(this.head);
+    }
+
     @Getter
     @Setter
-    private static class Node<T> {
+    static class Node<T> {
         T value;
         Node<T> next;
         Node<T> previous;

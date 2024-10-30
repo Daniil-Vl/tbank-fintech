@@ -20,7 +20,7 @@ import java.util.List;
 @Slf4j
 class DataFetcher {
 
-    private final KudagoClient client;
+    private final KudagoClient kudagoClientImpl;
     private final Repository<String, Category> categoryRepository;
     private final Repository<String, City> cityRepository;
 
@@ -29,10 +29,10 @@ class DataFetcher {
     void fetchData() {
         log.info("Fetching data from Kudago API...");
 
-        List<CategoryDTO> categories = client.getCategories();
+        List<CategoryDTO> categories = kudagoClientImpl.getCategories();
         log.info("Fetched categories: {}", categories);
 
-        List<CityDTO> cities = client.getCities();
+        List<CityDTO> cities = kudagoClientImpl.getCities();
         log.info("Fetched cities: {}", cities);
 
         log.info("Saving fetched data...");
