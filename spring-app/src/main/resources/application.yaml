@@ -14,6 +14,8 @@ spring:
     restart:
       enabled: false
 
+app:
+  jwt-public-key: PTX8PtwnRCuyo1G8xE/ntdysMWF7xzeuYcUxPb7K7MRyCv1XE0pFkzytDPR6ORMB
 
 aspect:
   enabled: true
