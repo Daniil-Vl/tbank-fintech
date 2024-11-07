@@ -16,7 +16,7 @@ import ru.tbank.springapp.WireMockTest;
         properties = {"spring.liquibase.enabled=true", "spring.main.allow-bean-definition-overriding=true"}
 )
 @ExtendWith(MockitoExtension.class)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 public abstract class AbstractIntegrationTest extends WireMockTest {
 
     protected static PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16")
