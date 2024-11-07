@@ -3,15 +3,14 @@ package ru.tbank.springapp.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.tbank.springapp.dto.auth.ChangePasswordRequestDTO;
 import ru.tbank.springapp.dto.auth.UserLoginRequestDTO;
 import ru.tbank.springapp.dto.auth.UserLogoutDTO;
 import ru.tbank.springapp.dto.auth.UserRegisterRequestDTO;
 import ru.tbank.springapp.dto.auth.jwt.AuthenticationTokenResponse;
 import ru.tbank.springapp.service.auth.AuthenticationService;
+import ru.tbank.springapp.service.user.UserService;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -20,6 +19,7 @@ import ru.tbank.springapp.service.auth.AuthenticationService;
 public class AuthController {
 
     private final AuthenticationService authenticationService;
+    private final UserService userService;
 
     @PostMapping("/register")
     public AuthenticationTokenResponse register(
@@ -42,6 +42,16 @@ public class AuthController {
             @RequestBody @Valid UserLogoutDTO userLogoutDTO
     ) {
         authenticationService.logout(userLogoutDTO.username());
+    }
+
+    @PutMapping("/change-password")
+    public void changePassword(
+            @RequestBody @Valid ChangePasswordRequestDTO changePasswordRequestDTO
+    ) {
+        userService.changePassword(
+                changePasswordRequestDTO.oldPassword(),
+                changePasswordRequestDTO.newPassword()
+        );
     }
 
 }

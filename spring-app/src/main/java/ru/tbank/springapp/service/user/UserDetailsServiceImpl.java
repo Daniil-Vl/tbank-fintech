@@ -1,7 +1,9 @@
 package ru.tbank.springapp.service.user;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,15 +48,23 @@ public class UserDetailsServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
+    public void changePassword(String oldPassword, String newPassword) {
+        UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        changePassword(user.getUsername(), oldPassword, newPassword);
+    }
+
+    @Override
+    @Transactional
     public void changePassword(String username, String oldPassword, String newPassword) {
         UserEntity userEntity = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(
                         String.format("User with username %s not found", username)
                 ));
 
-        String encoded = passwordEncoder.encode(oldPassword);
-        if (!encoded.equals(userEntity.getPassword())) {
-            log.warn("Wrong password for user: {}", username);
+        boolean passwordMatches = passwordEncoder.matches(oldPassword, userEntity.getPassword());
+        if (!passwordMatches) {
+            log.warn("Wrong password for user: {}", userEntity.getUsername());
             throw new WrongPasswordException("Wrong password");
         }
 

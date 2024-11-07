@@ -9,5 +9,7 @@ public interface UserService extends UserDetailsService {
 
     boolean isExists(String username);
 
+    void changePassword(String oldPassword, String newPassword);
+
     void changePassword(String username, String oldPassword, String newPassword);
 }
