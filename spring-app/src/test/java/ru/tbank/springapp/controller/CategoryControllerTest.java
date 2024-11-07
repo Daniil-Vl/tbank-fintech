@@ -3,6 +3,7 @@ package ru.tbank.springapp.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -10,6 +11,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.tbank.springapp.dto.CategoryDTO;
 import ru.tbank.springapp.exception.ResourceNotFoundException;
 import ru.tbank.springapp.service.CategoryService;
+import ru.tbank.springapp.service.jwt.JwtService;
+import ru.tbank.springapp.service.user.UserService;
 
 import java.util.List;
 
@@ -20,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@WebMvcTest(CategoryController.class)
+@WebMvcTest(value = CategoryController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
 class CategoryControllerTest {
 
     private static final String BASE_URL = "/api/v1/places/categories";
@@ -33,6 +36,12 @@ class CategoryControllerTest {
 
     @Autowired
     private ObjectMapper mapper;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private UserService userService;
 
     // GetCategories (success)
     @Test
