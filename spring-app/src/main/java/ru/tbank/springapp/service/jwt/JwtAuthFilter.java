@@ -1,6 +1,7 @@
 package ru.tbank.springapp.service.jwt;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,7 +33,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        log.info("Find authorization header");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             log.warn("Do not find token in auth header");
@@ -50,8 +50,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             username = jwtService.extractUsername(jwt);
         } catch (ExpiredJwtException e) {
             log.warn("Jwt token expired");
+        } catch (SignatureException e) {
+            log.warn("Jwt token signature error");
         }
-        log.info("Username {}", username);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userService.loadUserByUsername(username);

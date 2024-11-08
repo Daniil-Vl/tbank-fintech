@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ru.tbank.springapp.configuration.ApplicationConfig;
 import ru.tbank.springapp.dao.jpa.auth.JwtRepository;
-import ru.tbank.springapp.dao.jpa.auth.UserRepository;
 import ru.tbank.springapp.model.entities.auth.UserEntity;
 import ru.tbank.springapp.model.entities.auth.jwt.JwtEntity;
 
@@ -29,7 +28,6 @@ public class JwtServiceImpl implements JwtService {
 
     private final ApplicationConfig applicationConfig;
     private final JwtRepository jwtRepository;
-    private final UserRepository userRepository;
 
     public String extractUsername(String token) {
         return getClaims(token).get("sub", String.class);
