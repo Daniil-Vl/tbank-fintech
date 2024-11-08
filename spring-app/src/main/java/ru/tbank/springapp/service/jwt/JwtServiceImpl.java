@@ -95,7 +95,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     private Key getSignInKey() {
-        byte[] decoded = Decoders.BASE64.decode(applicationConfig.jwtPublicKey());
+        byte[] decoded = Decoders.BASE64.decode(applicationConfig.jwtPrivateKey());
         return Keys.hmacShaKeyFor(decoded);
     }
 }
