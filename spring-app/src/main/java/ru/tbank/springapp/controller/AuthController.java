@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.tbank.springapp.dto.auth.ChangePasswordRequestDTO;
 import ru.tbank.springapp.dto.auth.UserLoginRequestDTO;
-import ru.tbank.springapp.dto.auth.UserLogoutDTO;
 import ru.tbank.springapp.dto.auth.UserRegisterRequestDTO;
 import ru.tbank.springapp.dto.auth.jwt.AuthenticationTokenResponse;
 import ru.tbank.springapp.service.auth.AuthenticationService;
@@ -38,10 +37,8 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public void logout(
-            @RequestBody @Valid UserLogoutDTO userLogoutDTO
-    ) {
-        authenticationService.logout(userLogoutDTO.username());
+    public void logout() {
+        authenticationService.logout();
     }
 
     @PutMapping("/change-password")

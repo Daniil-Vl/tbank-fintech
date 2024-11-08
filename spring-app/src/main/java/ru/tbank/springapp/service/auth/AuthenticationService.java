@@ -9,5 +9,5 @@ public interface AuthenticationService {
 
     AuthenticationTokenResponse login(UserLoginRequestDTO userLoginRequestDTO);
 
-    void logout(String username);
+    void logout();
 }
