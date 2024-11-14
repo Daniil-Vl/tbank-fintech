@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '3.3.4'
     id 'io.spring.dependency-management' version '1.1.6'
     id 'jacoco'
+    id 'checkstyle'
 }
 
 group = 'ru.tbank'
@@ -50,8 +51,28 @@ tasks.named('test') {
     finalizedBy jacocoTestReport
 }
 
+checkstyle {
+    toolVersion = "10.12.4"
+    configFile file("../config/checkstyle/checkstyle.xml")
+    ignoreFailures = false
+    maxWarnings = 0
+    maxErrors = 0
+}
+
+checkstyleMain {
+    source = 'src/main/java'
+}
+
+checkstyleTest {
+    source = 'src/test/java'
+}
+
 jacocoTestReport {
     dependsOn test
+
+    reports {
+        xml.required = true
+    }
 
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect(({
