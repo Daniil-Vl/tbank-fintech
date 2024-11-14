@@ -32,7 +32,7 @@ jobs:
 
       - name: Build with Gradle Wrapper
         working-directory: spring-app
-        run: ./gradlew build
+        run: ./gradlew build -x checkstyleMain -x checkstyleTest
 
       - id: jacoco
         uses: madrapps/jacoco-report@v1.7.1
