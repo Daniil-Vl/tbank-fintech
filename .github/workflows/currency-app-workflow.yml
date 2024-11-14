@@ -1,7 +1,7 @@
 name: Currency App Build
 
 on:
-  push:
+  pull_request:
     paths:
       - .github/workflows/currency-app-workflow.yml
       - currency-app/**
