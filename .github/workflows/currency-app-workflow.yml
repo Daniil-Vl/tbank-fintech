@@ -42,3 +42,4 @@ jobs:
           min-coverage-overall: 50
           min-coverage-changed-files: 50
           title: Code Coverage
+          debug-mode: true
