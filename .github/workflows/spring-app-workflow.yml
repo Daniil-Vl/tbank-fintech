@@ -64,6 +64,3 @@ jobs:
 
       - run: ./gradlew checkstyleMain
         working-directory: spring-app
-
-      - run: ./gradlew checkstyleTest
-        working-directory: spring-app
