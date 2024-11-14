@@ -62,5 +62,8 @@ jobs:
         working-directory: currency-app
         run: chmod +x ./gradlew
 
-      - run: ./gradlew check
+      - run: ./gradlew checkstyleMain
+        working-directory: currency-app
+
+      - run: ./gradlew checkstyleTest
         working-directory: currency-app
