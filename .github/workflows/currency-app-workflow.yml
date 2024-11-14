@@ -43,3 +43,8 @@ jobs:
           min-coverage-changed-files: 50
           title: Code Coverage
           debug-mode: true
+
+      - name: Post test comment
+        run: gh pr comment ${{ github.event.pull_request.number }} --body "Test comment from GitHub Actions"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
