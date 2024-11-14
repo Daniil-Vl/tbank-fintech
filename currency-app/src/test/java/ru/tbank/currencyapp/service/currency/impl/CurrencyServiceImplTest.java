@@ -61,7 +61,7 @@ class CurrencyServiceImplTest {
         String fromCurrency = "USD";
         String toCurrency = "RUB";
         BigDecimal amount = new BigDecimal("3.0");
-        BigDecimal expected = new BigDecimal("90.0");
+        BigDecimal expected = new BigDecimal("90.000000");
 
         CurrencyConvertedDTO actual = currencyService.convertCurrencies(fromCurrency, toCurrency, amount);
 
