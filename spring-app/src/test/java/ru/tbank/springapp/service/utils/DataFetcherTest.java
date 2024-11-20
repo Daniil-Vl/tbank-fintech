@@ -8,9 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.event.EventListener;
-import org.springframework.web.client.RestClient;
 import ru.tbank.springapp.dao.Repository;
 import ru.tbank.springapp.dao.jpa.PlaceRepository;
 import ru.tbank.springapp.integration.AbstractIntegrationTest;
@@ -30,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @ExtendWith(MockitoExtension.class)
+@Import(AbstractIntegrationTest.ClientConfig.class)
 class DataFetcherTest extends AbstractIntegrationTest {
 
     @SpyBean
@@ -64,13 +64,6 @@ class DataFetcherTest extends AbstractIntegrationTest {
 
     @TestConfiguration
     static class TestKudagoClientConfiguration {
-        @Bean
-        public RestClient restClient() {
-            return RestClient.builder()
-                    .baseUrl("http://localhost:" + wireMockExtension.getPort())
-                    .build();
-        }
-
         // To set up stubs for ApplicationReadyEvent
         // Because on ApplicationReadyEvent DataFetcher will start fetching places and categories with kudago client
         @EventListener(ApplicationStartedEvent.class)

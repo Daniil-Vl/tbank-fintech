@@ -6,7 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.tbank.springapp.dao.jpa.EventRepository;
 import ru.tbank.springapp.dao.jpa.PlaceRepository;
-import ru.tbank.springapp.dto.EventDTO;
+import ru.tbank.springapp.dto.EventJpaDTO;
+import ru.tbank.springapp.dto.events.EventResponseDTO;
 import ru.tbank.springapp.exception.ResourceNotFoundException;
 import ru.tbank.springapp.model.entities.EventEntity;
 import ru.tbank.springapp.model.entities.PlaceEntity;
@@ -42,28 +43,28 @@ public class EventServiceImpl implements EventService {
     private final KudagoClient kudagoClient;
 
     @Override
-    public List<EventDTO> findAll() {
+    public List<EventJpaDTO> findAll() {
         log.info("Trying to get all events");
         return eventRepository
                 .findAll()
                 .stream()
-                .map(EventDTO::fromEvent)
+                .map(EventJpaDTO::fromEvent)
                 .toList();
     }
 
     @Override
-    public EventDTO findById(long id) {
+    public EventJpaDTO findById(long id) {
         log.info("Trying to find event by id {}", id);
 
         EventEntity event = eventRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Event with id " + id + " not found"));
 
-        return EventDTO.fromEvent(event);
+        return EventJpaDTO.fromEvent(event);
     }
 
     @Override
     @Transactional
-    public EventDTO create(LocalDate date, String name, String slug, String placeSlug) {
+    public EventJpaDTO create(LocalDate date, String name, String slug, String placeSlug) {
         log.info("Trying to create event with date = {}, name = {}, slug = {}, place slug = {}", date, name, slug, placeSlug);
 
         Optional<PlaceEntity> optionalPlace = placeRepository.findBySlug(placeSlug);
@@ -87,12 +88,12 @@ public class EventServiceImpl implements EventService {
         eventRepository.save(eventEntity);
         log.info("Event with id {} created", eventEntity.getId());
 
-        return EventDTO.fromEvent(eventEntity);
+        return EventJpaDTO.fromEvent(eventEntity);
     }
 
     @Override
     @Transactional
-    public int update(int id, LocalDate date, String name, String slug, String placeSlug) {
+    public int update(long id, LocalDate date, String name, String slug, String placeSlug) {
         log.info("Trying to update event with id {}", id);
 
         Optional<PlaceEntity> optionalPlace = placeRepository.findBySlug(placeSlug);
@@ -132,7 +133,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public CompletableFuture<List<EventDTO>> getAffordableEvents(BigDecimal budget, String currency, LocalDate fromDate, LocalDate toDate) {
+    public CompletableFuture<List<EventResponseDTO>> getAffordableEvents(BigDecimal budget, String currency, LocalDate fromDate, LocalDate toDate) {
         CompletableFuture<EventListDTO> events = kudagoClient.getEvents(fromDate, toDate);
         CompletableFuture<CurrencyConvertedDTO> rubConvertedDTO = currencyConverterClient.convertCurrency(currency, "RUB", budget);
 
@@ -143,7 +144,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Mono<List<EventDTO>> getEventsReactive(BigDecimal budget, String currency, LocalDate fromDate, LocalDate toDate) {
+    public Mono<List<EventResponseDTO>> getEventsReactive(BigDecimal budget, String currency, LocalDate fromDate, LocalDate toDate) {
         Mono<EventListDTO> eventsMono = kudagoClient.getEventsReactive(fromDate, toDate);
         Mono<CurrencyConvertedDTO> convertedBudgetMono = currencyConverterClient.convertCurrencyReactively(currency, "RUB", budget);
 
@@ -160,8 +161,8 @@ public class EventServiceImpl implements EventService {
                 });
     }
 
-    private List<EventDTO> findAffordableEvents(BigDecimal budget, EventListDTO events) {
-        List<EventDTO> result = new ArrayList<>();
+    private List<EventResponseDTO> findAffordableEvents(BigDecimal budget, EventListDTO events) {
+        List<EventResponseDTO> result = new ArrayList<>();
 
         for (var event : events.events())
             if (canAffordEvent(budget, event))

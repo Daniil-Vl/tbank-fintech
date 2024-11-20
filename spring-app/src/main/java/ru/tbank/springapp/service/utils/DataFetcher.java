@@ -8,8 +8,6 @@ import ru.tbank.springapp.aspect.Timed;
 import ru.tbank.springapp.client.KudagoClient;
 import ru.tbank.springapp.dao.Repository;
 import ru.tbank.springapp.dao.jpa.PlaceRepository;
-import ru.tbank.springapp.dto.CategoryDTO;
-import ru.tbank.springapp.dto.PlaceDTO;
 import ru.tbank.springapp.model.Category;
 import ru.tbank.springapp.model.entities.PlaceEntity;
 
@@ -57,9 +55,9 @@ class DataFetcher {
     private void fetchCities() {
         var places = client.getCities();
 
-        log.info("Fetched cities: {}", cities);
+        log.info("Fetched cities: {}", places);
         log.info("Saving fetched cities...");
-      
+
         places.forEach(cityDTO -> {
             placeRepository.save(
                     PlaceEntity.builder()
@@ -67,6 +65,7 @@ class DataFetcher {
                             .name(cityDTO.name())
                             .build()
             );
+        });
 
         log.info("Fetched cities successfully saved");
     }

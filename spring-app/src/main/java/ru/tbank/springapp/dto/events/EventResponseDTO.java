@@ -1,6 +1,6 @@
 package ru.tbank.springapp.dto.events;
 
-public record EventDTO(
+public record EventResponseDTO(
         String title,
         String description,
         String price,

@@ -2,7 +2,7 @@ package ru.tbank.springapp.dto.events.kudago;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import ru.tbank.springapp.dto.events.EventDTO;
+import ru.tbank.springapp.dto.events.EventResponseDTO;
 import ru.tbank.springapp.utils.serialization.EventDTODateDeserializer;
 
 import java.time.LocalDate;
@@ -17,8 +17,8 @@ public record EventKudaGODTO(
         @JsonProperty(value = "is_free") Boolean isFree,
         @JsonProperty(value = "site_url") String siteUrl
 ) {
-    public EventDTO toEventDTO() {
-        return new EventDTO(title, description, price, siteUrl);
+    public EventResponseDTO toEventDTO() {
+        return new EventResponseDTO(title, description, price, siteUrl);
     }
 
     @JsonDeserialize(using = EventDTODateDeserializer.class)

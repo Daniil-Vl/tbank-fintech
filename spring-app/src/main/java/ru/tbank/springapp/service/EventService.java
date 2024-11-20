@@ -2,31 +2,28 @@ package ru.tbank.springapp.service;
 
 
 import reactor.core.publisher.Mono;
-import ru.tbank.springapp.dto.events.EventDTO;
+import ru.tbank.springapp.dto.EventJpaDTO;
+import ru.tbank.springapp.dto.events.EventResponseDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import ru.tbank.springapp.dto.EventDTO;
-
-import java.time.LocalDate;
-import java.util.List;
 
 public interface EventService {
 
-    List<EventDTO> findAll();
+    List<EventJpaDTO> findAll();
 
-    EventDTO findById(long id);
+    EventJpaDTO findById(long id);
 
-    EventDTO create(LocalDate date, String name, String slug, String placeName);
+    EventJpaDTO create(LocalDate date, String name, String slug, String placeName);
 
-    int update(int id, LocalDate date, String name, String slug, String placeName);
+    int update(long id, LocalDate date, String name, String slug, String placeName);
 
     long delete(long id);
 
-    CompletableFuture<List<EventDTO>> getAffordableEvents(BigDecimal budget, String currency, LocalDate fromDate, LocalDate toDate);
+    CompletableFuture<List<EventResponseDTO>> getAffordableEvents(BigDecimal budget, String currency, LocalDate fromDate, LocalDate toDate);
 
-    Mono<List<EventDTO>> getEventsReactive(BigDecimal budget, String currency, LocalDate fromDate, LocalDate toDate);
+    Mono<List<EventResponseDTO>> getEventsReactive(BigDecimal budget, String currency, LocalDate fromDate, LocalDate toDate);
 
 }

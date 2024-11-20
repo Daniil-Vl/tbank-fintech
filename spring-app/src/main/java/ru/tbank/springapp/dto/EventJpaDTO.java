@@ -7,15 +7,15 @@ import ru.tbank.springapp.model.entities.EventEntity;
 
 import java.time.LocalDate;
 
-public record EventDTO(
+public record EventJpaDTO(
         @NotNull Long id,
         @NotNull LocalDate date,
         @NotBlank @Length(max = 300) String name,
         @NotBlank @Length(max = 255) String slug,
         @NotBlank String placeName
 ) {
-    public static EventDTO fromEvent(EventEntity event) {
-        return new EventDTO(
+    public static EventJpaDTO fromEvent(EventEntity event) {
+        return new EventJpaDTO(
                 event.getId(),
                 event.getStartDate(),
                 event.getName(),

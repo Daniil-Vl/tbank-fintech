@@ -4,11 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.tbank.springapp.dao.jpa.EventRepository;
 import ru.tbank.springapp.dao.jpa.PlaceRepository;
-import ru.tbank.springapp.dto.EventDTO;
+import ru.tbank.springapp.dto.EventJpaDTO;
 import ru.tbank.springapp.dto.EventRequestDTO;
 import ru.tbank.springapp.model.entities.EventEntity;
 import ru.tbank.springapp.model.entities.PlaceEntity;
@@ -18,11 +19,15 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Import(AbstractIntegrationTest.ClientConfig.class)
 public class EventsIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired
@@ -69,9 +74,9 @@ public class EventsIntegrationTest extends AbstractIntegrationTest {
         event1 = eventRepository.save(event1);
         event2 = eventRepository.save(event2);
 
-        List<EventDTO> expectedListOfEvents = List.of(
-                EventDTO.fromEvent(event1),
-                EventDTO.fromEvent(event2)
+        List<EventJpaDTO> expectedListOfEvents = List.of(
+                EventJpaDTO.fromEvent(event1),
+                EventJpaDTO.fromEvent(event2)
         );
         String expectedResponseBody = objectMapper.writeValueAsString(expectedListOfEvents);
 
@@ -102,7 +107,7 @@ public class EventsIntegrationTest extends AbstractIntegrationTest {
         placeRepository.save(placeEntity);
         event = eventRepository.save(event);
 
-        EventDTO expectedEvent = EventDTO.fromEvent(event);
+        EventJpaDTO expectedEvent = EventJpaDTO.fromEvent(event);
         String expectedResponseBody = objectMapper.writeValueAsString(expectedEvent);
 
         mockMvc
