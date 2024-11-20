@@ -1,64 +1,35 @@
 package ru.tbank.springapp.controller;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-import ru.tbank.springapp.dto.EventDTO;
-import ru.tbank.springapp.dto.EventRequestDTO;
-import ru.tbank.springapp.service.EventService;
+import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import reactor.core.publisher.Mono;
+import ru.tbank.springapp.dto.events.EventDTO;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
-@RestController
-@RequestMapping("/api/v1/events")
-@RequiredArgsConstructor
-public class EventController {
+public interface EventController {
 
-    private final EventService eventService;
+    @Operation(summary = "Получение событий на основе пользовательских пожеланий", operationId = "getEvents")
+    @GetMapping("/events-async")
+    CompletableFuture<List<EventDTO>> getEvents(
+            @RequestParam BigDecimal budget,
+            @RequestParam String currency,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fromDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate toDate
+    );
 
-    @GetMapping
-    List<EventDTO> getEvents() {
-        return eventService.findAll();
-    }
+    @Operation(summary = "Получение событий на основе пользовательских пожеланий", operationId = "getEvents")
+    @GetMapping("/events-reactive")
+    Mono<List<EventDTO>> getEventsReactive(
+            @RequestParam BigDecimal budget,
+            @RequestParam String currency,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fromDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate toDate
+    ) throws InterruptedException;
 
-    @GetMapping("/{id}")
-    EventDTO getEventById(
-            @PathVariable @Positive int id
-    ) {
-        return eventService.findById(id);
-    }
-
-    @PostMapping
-    void createEvent(
-            @RequestBody @Valid EventRequestDTO eventRequestDTO
-    ) {
-        eventService.create(
-                eventRequestDTO.date(),
-                eventRequestDTO.name(),
-                eventRequestDTO.slug(),
-                eventRequestDTO.placeSlug()
-        );
-    }
-
-    @PutMapping("/{id}")
-    void updateEvent(
-            @PathVariable @Positive int id,
-            @RequestBody @Valid EventRequestDTO eventRequestDTO
-    ) {
-        eventService.update(
-                id,
-                eventRequestDTO.date(),
-                eventRequestDTO.name(),
-                eventRequestDTO.slug(),
-                eventRequestDTO.placeSlug()
-        );
-    }
-
-    @DeleteMapping("/{id}")
-    void deleteEvent(
-            @PathVariable @Positive long id
-    ) {
-        eventService.delete(id);
-    }
 }

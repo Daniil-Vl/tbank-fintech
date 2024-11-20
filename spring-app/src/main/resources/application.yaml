@@ -14,6 +14,12 @@ spring:
     restart:
       enabled: false
 
+app:
+  data-fetching:
+    fetching-executor-service-threads-number: 4
+    period: 5s
+  currency-converter-base-url: http://localhost:8090/currencies
+  kudago-rate-limit: 5
 
 aspect:
   enabled: true
