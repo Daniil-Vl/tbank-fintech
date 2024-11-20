@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import ru.tbank.springapp.client.KudagoClient;
 import ru.tbank.springapp.dto.CategoryDTO;
-import ru.tbank.springapp.dto.CityDTO;
+import ru.tbank.springapp.dto.PlaceDTO;
 import ru.tbank.springapp.dto.events.kudago.EventListDTO;
 
 import java.time.LocalDate;
@@ -55,7 +55,7 @@ public class KudagoClientImpl implements KudagoClient {
     }
 
     @Override
-    public List<CityDTO> getCities() {
+    public List<PlaceDTO> getCities() {
         try {
             kudagoSemaphore.acquire();
 

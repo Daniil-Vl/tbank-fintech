@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.tbank.springapp.client.impl.KudagoClientImpl;
 import ru.tbank.springapp.dto.CategoryDTO;
-import ru.tbank.springapp.dto.CityDTO;
+import ru.tbank.springapp.dto.PlaceDTO;
 import ru.tbank.springapp.dto.events.kudago.EventKudaGODTO;
 import ru.tbank.springapp.dto.events.kudago.EventListDTO;
 
@@ -127,6 +127,11 @@ class KudagoClientTest extends WireMockTest {
 
     @Test
     void givenClient_whenGetCities_thenSuccessfullyGetAllCities() {
+        List<PlaceDTO> expectedCities = List.of(
+                new PlaceDTO("fir", "first"),
+                new PlaceDTO("sec", "second")
+        );
+
         stubFor(
                 get("/locations/")
                         .willReturn(
@@ -137,12 +142,7 @@ class KudagoClientTest extends WireMockTest {
                         )
         );
 
-        List<CityDTO> expectedCities = List.of(
-                new CityDTO("fir", "first"),
-                new CityDTO("sec", "second")
-        );
-
-        List<CityDTO> cities = client.getCities();
+        List<PlaceDTO> cities = client.getCities();
 
         Assertions.assertIterableEquals(expectedCities, cities);
     }
@@ -154,7 +154,7 @@ class KudagoClientTest extends WireMockTest {
                         .willReturn(aResponse().withStatus(500))
         );
 
-        List<CityDTO> cities = client.getCities();
+        List<PlaceDTO> cities = client.getCities();
 
         Assertions.assertIterableEquals(List.of(), cities);
     }

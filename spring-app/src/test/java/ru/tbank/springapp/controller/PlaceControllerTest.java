@@ -7,9 +7,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.tbank.springapp.dto.CityDTO;
+import ru.tbank.springapp.dto.PlaceDTO;
 import ru.tbank.springapp.exception.ResourceNotFoundException;
-import ru.tbank.springapp.service.CityService;
+import ru.tbank.springapp.service.PlaceService;
 
 import java.util.List;
 
@@ -19,27 +19,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(CityController.class)
-class CityControllerTest {
+@WebMvcTest(PlaceController.class)
+class PlaceControllerTest {
 
-    private static final String BASE_URL = "/api/v1/locations";
+    private static final String BASE_URL = "/api/v1/places";
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private CityService service;
+    private PlaceService service;
 
     @Autowired
     private ObjectMapper mapper;
 
-    // GetCities (success)
+    // GetPlaces (success)
     @Test
-    void given_whenGetCities_thenReturnOkWithJsonArray() throws Exception {
-        CityDTO cityDTO = new CityDTO("fir", "first");
-        String expectedResponseString = mapper.writeValueAsString(List.of(cityDTO));
+    void given_whenGetPlaces_thenReturnOkWithJsonArray() throws Exception {
+        PlaceDTO placeDTO = new PlaceDTO("fir", "first");
+        String expectedResponseString = mapper.writeValueAsString(List.of(placeDTO));
 
-        when(service.findAll()).thenReturn(List.of(cityDTO.toCity()));
+        when(service.findAll()).thenReturn(List.of(placeDTO));
 
         mockMvc
                 .perform(get(BASE_URL))
@@ -48,39 +48,39 @@ class CityControllerTest {
                 .andExpect(content().string(expectedResponseString));
     }
 
-    // GetCity (success)
+    // GetPlace (success)
     @Test
-    void givenExistingCityId_whenGetCity_thenReturnOkWithCity() throws Exception {
-        CityDTO cityDTO = new CityDTO("fir", "first");
-        String expectedResponseString = mapper.writeValueAsString(cityDTO);
+    void givenExistingPlaceId_whenGetPlace_thenReturnOkWithPlace() throws Exception {
+        PlaceDTO placeDTO = new PlaceDTO("fir", "first");
+        String expectedResponseString = mapper.writeValueAsString(placeDTO);
 
-        when(service.findById(cityDTO.slug())).thenReturn(cityDTO.toCity());
+        when(service.findById(placeDTO.slug())).thenReturn(placeDTO);
 
         mockMvc
-                .perform(get(BASE_URL + "/" + cityDTO.slug()))
+                .perform(get(BASE_URL + "/" + placeDTO.slug()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(expectedResponseString));
     }
 
-    // GetCity (fail)
+    // GetPlace (fail)
     @Test
-    void givenNonExistingCityId_whenGetCity_thenReturnNotFound() throws Exception {
-        CityDTO cityDTO = new CityDTO("fir", "first");
+    void givenNonExistingPlaceId_whenGetPlace_thenReturnNotFound() throws Exception {
+        PlaceDTO placeDTO = new PlaceDTO("fir", "first");
 
-        when(service.findById(cityDTO.slug())).thenThrow(ResourceNotFoundException.class);
+        when(service.findById(placeDTO.slug())).thenThrow(ResourceNotFoundException.class);
 
         mockMvc
-                .perform(get(BASE_URL + "/" + cityDTO.slug()))
+                .perform(get(BASE_URL + "/" + placeDTO.slug()))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
 
-    // CreateCity (success)
+    // CreatePlace (success)
     @Test
-    void givenCityDTO_whenCreateCity_thenServiceCreatesCity() throws Exception {
-        CityDTO cityDTO = new CityDTO("fir", "first");
-        String requestBody = mapper.writeValueAsString(cityDTO);
+    void givenPlaceDTO_whenCreatePlace_thenServiceCreatesPlace() throws Exception {
+        PlaceDTO placeDTO = new PlaceDTO("fir", "first");
+        String requestBody = mapper.writeValueAsString(placeDTO);
 
         mockMvc
                 .perform(
@@ -88,15 +88,15 @@ class CityControllerTest {
                 ).andDo(print())
                 .andExpect(status().isOk());
 
-        verify(service, times(1)).create(cityDTO.slug(), cityDTO.name());
+        verify(service, times(1)).create(placeDTO.slug(), placeDTO.name());
     }
 
-    // UpdateCity (success)
+    // UpdatePlace (success)
     @Test
-    void givenIdAndCityDTO_whenUpdateCity_thenServiceUpdatesCity() throws Exception {
-        CityDTO cityDTO = new CityDTO("fir", "first");
-        String id = cityDTO.slug();
-        String requestBody = mapper.writeValueAsString(cityDTO);
+    void givenIdAndPlaceDTO_whenUpdatePlace_thenServiceUpdatesPlace() throws Exception {
+        PlaceDTO placeDTO = new PlaceDTO("fir", "first");
+        String id = placeDTO.slug();
+        String requestBody = mapper.writeValueAsString(placeDTO);
 
         mockMvc
                 .perform(
@@ -106,17 +106,17 @@ class CityControllerTest {
                 ).andDo(print())
                 .andExpect(status().isOk());
 
-        verify(service, times(1)).update(cityDTO.slug(), cityDTO.name());
+        verify(service, times(1)).update(placeDTO.slug(), placeDTO.slug(), placeDTO.name());
     }
 
-    // UpdateCity (fail)
+    // UpdatePlace (fail)
     @Test
-    void givenNonExistentId_whenUpdateCity_thenReturnNotFound() throws Exception {
-        CityDTO cityDTO = new CityDTO("fir", "first");
-        String id = cityDTO.slug();
-        String requestBody = mapper.writeValueAsString(cityDTO);
+    void givenNonExistentId_whenUpdatePlace_thenReturnNotFound() throws Exception {
+        PlaceDTO placeDTO = new PlaceDTO("fir", "first");
+        String id = placeDTO.slug();
+        String requestBody = mapper.writeValueAsString(placeDTO);
 
-        when(service.update(cityDTO.slug(), cityDTO.name())).thenThrow(ResourceNotFoundException.class);
+        when(service.update(placeDTO.slug(), placeDTO.slug(), placeDTO.name())).thenThrow(ResourceNotFoundException.class);
 
         mockMvc
                 .perform(
@@ -127,9 +127,9 @@ class CityControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    // DeleteCity (success)
+    // DeletePlace (success)
     @Test
-    void givenId_whenDeleteCity_thenServiceDeletesCity() throws Exception {
+    void givenId_whenDeletePlace_thenServiceDeletesPlace() throws Exception {
         String id = "fir";
 
         mockMvc
@@ -140,9 +140,9 @@ class CityControllerTest {
         verify(service, times(1)).delete(id);
     }
 
-    // DeleteCity (fail)
+    // DeletePlace (fail)
     @Test
-    void givenNonExistentId_whenDeleteCity_thenReturnNotFound() throws Exception {
+    void givenNonExistentId_whenDeletePlace_thenReturnNotFound() throws Exception {
         String id = "fir";
 
         when(service.delete(id)).thenThrow(ResourceNotFoundException.class);

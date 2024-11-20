@@ -7,8 +7,11 @@ import org.springframework.stereotype.Service;
 import ru.tbank.springapp.aspect.Timed;
 import ru.tbank.springapp.client.KudagoClient;
 import ru.tbank.springapp.dao.Repository;
+import ru.tbank.springapp.dao.jpa.PlaceRepository;
+import ru.tbank.springapp.dto.CategoryDTO;
+import ru.tbank.springapp.dto.PlaceDTO;
 import ru.tbank.springapp.model.Category;
-import ru.tbank.springapp.model.City;
+import ru.tbank.springapp.model.entities.PlaceEntity;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -20,7 +23,7 @@ class DataFetcher {
 
     private final KudagoClient client;
     private final Repository<String, Category> categoryRepository;
-    private final Repository<String, City> cityRepository;
+    private final PlaceRepository placeRepository;
 
     private final ExecutorService fetchingExecutorService;
 
@@ -52,14 +55,18 @@ class DataFetcher {
     }
 
     private void fetchCities() {
-        var cities = client.getCities();
+        var places = client.getCities();
 
         log.info("Fetched cities: {}", cities);
         log.info("Saving fetched cities...");
-
-        cities.forEach(cityDTO -> {
-            cityRepository.save(cityDTO.slug(), cityDTO.toCity());
-        });
+      
+        places.forEach(cityDTO -> {
+            placeRepository.save(
+                    PlaceEntity.builder()
+                            .slug(cityDTO.slug())
+                            .name(cityDTO.name())
+                            .build()
+            );
 
         log.info("Fetched cities successfully saved");
     }

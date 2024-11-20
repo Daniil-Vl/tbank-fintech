@@ -2,7 +2,7 @@ package ru.tbank.springapp.client;
 
 import reactor.core.publisher.Mono;
 import ru.tbank.springapp.dto.CategoryDTO;
-import ru.tbank.springapp.dto.CityDTO;
+import ru.tbank.springapp.dto.PlaceDTO;
 import ru.tbank.springapp.dto.events.kudago.EventListDTO;
 
 import java.time.LocalDate;
@@ -12,7 +12,7 @@ import java.util.concurrent.CompletableFuture;
 public interface KudagoClient {
     List<CategoryDTO> getCategories();
 
-    List<CityDTO> getCities();
+    List<PlaceDTO> getCities();
 
     CompletableFuture<EventListDTO> getEvents(LocalDate fromDate, LocalDate toDate);
 
