@@ -1,6 +1,21 @@
 spring:
   application:
     name: spring-app
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/kudago
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+  devtools:
+    restart:
+      enabled: false
+
+app:
+  jwt-private-key: PTX8PtwnRCuyo1G8xE/ntdysMWF7xzeuYcUxPb7K7MRyCv1XE0pFkzytDPR6ORMB
 
 aspect:
   enabled: true
@@ -8,3 +23,6 @@ aspect:
 server:
   error:
     include-stacktrace: never
+logging:
+  level:
+    sql: warn
