@@ -37,4 +37,15 @@ public class TestController {
         }
     }
 
+    @GetMapping("/stackoverflow")
+    public String stackoverflow() {
+        return stackoverflow();
+    }
+
+    @GetMapping("out_of_memory")
+    public String outOfMemory() {
+        int[] ints = new int[Integer.MAX_VALUE];
+        return "You will never receive this message";
+    }
+
 }
