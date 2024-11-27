@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: lesson_16
+  devtools:
+    restart:
+      enabled: false
